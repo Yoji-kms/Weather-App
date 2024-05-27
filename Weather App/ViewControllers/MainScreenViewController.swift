@@ -8,7 +8,8 @@
 import UIKit
 
 final class MainScreenViewController: UIViewController {
-    private let viewModel: MainScreenViewModelProtocol
+    private(set) var viewModel: MainScreenViewModelProtocol
+    weak var delegate: UpdateTitleDelegate?
     
 //    MARK: Views
     private lazy var scrollView: UIScrollView = {
@@ -16,29 +17,10 @@ final class MainScreenViewController: UIViewController {
         scrl.backgroundColor = .white
         scrl.isScrollEnabled = true
         scrl.automaticallyAdjustsScrollIndicatorInsets = true
+        scrl.refreshControl = self.refreshControl
         scrl.translatesAutoresizingMaskIntoConstraints = false
         return scrl
     }()
-    
-//    private lazy var settingsBarBtn: UIBarButtonItem = {
-//        let btn = UIBarButtonItem(
-//            image: UIImage(named: Icons.settings.rawValue),
-//            style: .done,
-//            target: self,
-//            action: #selector(settingsBtnBarAcion)
-//        )
-//        return btn
-//    }()
-//    
-//    private lazy var locationBarBtn: UIBarButtonItem = {
-//        let btn = UIBarButtonItem(
-//            image: UIImage(named: Icons.location.rawValue),
-//            style: .done,
-//            target: self,
-//            action: #selector(locationBtnBarAcion)
-//        )
-//        return btn
-//    }()
     
     private lazy var mainView: MainView = {
         let view = MainView()
@@ -46,6 +28,21 @@ final class MainScreenViewController: UIViewController {
         view.layer.cornerRadius = 5
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
+    }()
+    
+    private lazy var moreFor24HoursButton: UIButton = {
+        let button = UIButton()
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 16),
+            .underlineStyle: NSUnderlineStyle.single.rawValue
+        ]
+        let title = String(localized: Strings.moreForTwentyFourHours.rawValue)
+        let attributedTitle = NSMutableAttributedString(string: title, attributes: attributes)
+        button.backgroundColor = .clear
+        button.setAttributedTitle(attributedTitle, for: .normal)
+        button.addTarget(self, action: #selector(moreFor24HoursButtonDidTap), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }()
     
     private lazy var forecastCollectionViewLayout: UICollectionViewFlowLayout = {
@@ -85,6 +82,18 @@ final class MainScreenViewController: UIViewController {
         return tblView
     }()
     
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        
+        return refreshControl
+    }()
+    
+    @objc private func refresh() {
+        self.updateAll()
+        self.scrollView.refreshControl?.endRefreshing()
+    }
+    
     //    MARK: Inits
     init(viewModel: MainScreenViewModelProtocol) {
         self.viewModel = viewModel
@@ -101,14 +110,29 @@ final class MainScreenViewController: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor = .white
 
-//        self.setupNavigation()
         self.setupViews()
+        self.updateAll()
+    }
+    
+    func updateAll() {
+        self.viewModel.updateStateNet(request: .updateWeather { [weak self] in
+            guard let self else { return }
+            self.mainView.setup(with: self.viewModel.weather)
+            self.delegate?.updateTitle(self.viewModel.weather.name ?? "")
+        })
+        
+        self.viewModel.updateStateNet(request: .updateForecast { [weak self] in
+            guard let self else { return }
+            self.forecastCollectionView.reloadData()
+            self.daylyForecastTableView.reloadData()
+        })
     }
     
 //    MARK: Setups
     private func setupViews() {
         self.view.addSubview(self.scrollView)
         self.scrollView.addSubview(self.mainView)
+        self.scrollView.addSubview(self.moreFor24HoursButton)
         self.scrollView.addSubview(self.forecastCollectionView)
         self.scrollView.addSubview(self.daylyForecastTableView)
         
@@ -126,8 +150,13 @@ final class MainScreenViewController: UIViewController {
                 .constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             self.mainView.heightAnchor.constraint(equalToConstant: 212),
             
+            self.moreFor24HoursButton.topAnchor.constraint(equalTo: self.mainView.bottomAnchor,constant: 32),
+            self.moreFor24HoursButton.trailingAnchor
+                .constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            self.moreFor24HoursButton.heightAnchor.constraint(equalToConstant: 20),
+            
             self.forecastCollectionView.topAnchor
-                .constraint(equalTo: self.mainView.bottomAnchor,constant: 32),
+                .constraint(equalTo: self.moreFor24HoursButton.bottomAnchor,constant: 24),
             self.forecastCollectionView.leadingAnchor
                 .constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
             self.forecastCollectionView.trailingAnchor
@@ -146,28 +175,10 @@ final class MainScreenViewController: UIViewController {
         ])
     }
     
-//    private func setupNavigation() {
-//        self.navigationController?.navigationBar.isHidden = false
-//        self.navigationItem.title = "Saint Petersburg"
-//        self.navigationController?.navigationBar.tintColor = .black
-//        self.navigationItem.style = .navigator
-//        self.navigationItem.leftBarButtonItem = self.settingsBarBtn
-//        self.navigationItem.rightBarButtonItem = self.locationBarBtn
-//    }
-    
-////    MARK: Actions
-//    @objc private func settingsBtnBarAcion() {
-//        self.viewModel.updateStateNet(request: .updateTemperature{
-//            DispatchQueue.main.sync {
-//                self.mainView.setup(with: self.viewModel.weather)
-//                self.forecastCollectionView.reloadData()
-//            }
-//        })
-//    }
-//    
-//    @objc private func locationBtnBarAcion() {
-//        print("🎃")
-//    }
+//    MARK: Actions
+    @objc private func moreFor24HoursButtonDidTap() {
+        
+    }
 }
 
 extension MainScreenViewController: UICollectionViewDelegate {

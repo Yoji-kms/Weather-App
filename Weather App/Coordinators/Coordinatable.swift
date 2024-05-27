@@ -9,8 +9,6 @@ import UIKit
 
 protocol Coordinatable: AnyObject {
     var childCoordinators: [Coordinatable] { get }
-    var module: Module? { get }
-    var moduleType: Module.ModuleType { get }
     func start() -> UIViewController
     func addChildCoordinator(_ coordinator: Coordinatable)
     func removeChildCoordinator(_ coordinator: Coordinatable)

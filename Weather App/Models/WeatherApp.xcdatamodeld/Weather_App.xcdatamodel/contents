@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23E5180j" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22758" systemVersion="23F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="CityEntity" representedClassName="CityEntity" syncable="YES" codeGenerationType="class">
         <attribute name="name" attributeType="String"/>
         <attribute name="sunrise" attributeType="Date" usesScalarValueType="NO"/>
@@ -12,6 +12,7 @@
         <relationship name="weather" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WeatherEntity" inverseName="clouds" inverseEntity="WeatherEntity"/>
     </entity>
     <entity name="CoordinatesEntity" representedClassName="CoordinatesEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="isCurrentLocation" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="lat" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="lon" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="city" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CityEntity" inverseName="coordCity" inverseEntity="CityEntity"/>

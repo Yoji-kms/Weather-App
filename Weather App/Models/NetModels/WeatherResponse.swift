@@ -8,7 +8,7 @@
 import Foundation
 
 struct WeatherResponse: Decodable {
-    let coord: CoordinatesResponse?
+//    let coord: CoordinatesResponse?
     let weather: [WeatherItemResponse]
     let main: MainDataResponse
     let clouds: CloudsResponse

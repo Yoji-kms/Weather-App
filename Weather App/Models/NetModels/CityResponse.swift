@@ -9,7 +9,6 @@ import Foundation
 
 struct CityResponse: Decodable {
     let name: String
-    let coord: CoordinatesResponse
     let sunset: TimeInterval
     let sunrise: TimeInterval
 }

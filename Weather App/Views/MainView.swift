@@ -9,7 +9,7 @@ import UIKit
 
 final class MainView: UIView {
     private lazy var sunriseImg: UIImageView = {
-        let img = UIImage(named: Icons.sunrise.rawValue)
+        let img = UIImage(resource: .sunrise)
         let imgView = UIImageView(image: img)
         imgView.tintColor = UIColor(resource: .darkYellow)
         imgView.translatesAutoresizingMaskIntoConstraints = false
@@ -17,7 +17,7 @@ final class MainView: UIView {
     }()
     
     private lazy var sunsetImg: UIImageView = {
-        let img = UIImage(named: Icons.sunset.rawValue)
+        let img = UIImage(resource: .sunset)
         let imgView = UIImageView(image: img)
         imgView.tintColor = UIColor(resource: .darkYellow)
         imgView.translatesAutoresizingMaskIntoConstraints = false
@@ -174,20 +174,14 @@ final class MainView: UIView {
     
     private func getParametersText(weather: Weather) -> NSAttributedString {
      
-        let humidityImgAtchmnt = NSTextAttachment(
-            image: UIImage(named: Icons.coloredHumidityLight.rawValue) ?? UIImage()
-        )
+        let humidityImgAtchmnt = NSTextAttachment(image: UIImage(resource: .coloredHumidityLight))
         humidityImgAtchmnt.bounds = CGRect(x: 0, y: 0, width: 13, height: 15)
-        let windImgAtchmnt = NSTextAttachment(
-            image: UIImage(named: Icons.coloredWindLight.rawValue) ?? UIImage()
-        )
+        let windImgAtchmnt = NSTextAttachment(image: UIImage(resource: .coloredWindLight))
         windImgAtchmnt.bounds = CGRect(x: 0, y: 0, width: 25, height: 16)
-        let cloudsImgAtchmnt = NSTextAttachment(
-            image: UIImage(named: Icons.coloredCloudsSun.rawValue) ?? UIImage()
-        )
+        let cloudsImgAtchmnt = NSTextAttachment(image: UIImage(resource: .coloredCloudsSun))
         cloudsImgAtchmnt.bounds = CGRect(x: 0, y: 0, width: 21, height: 18)
         
-        let metersForSecond = NSLocalizedString("m/s", comment: "m/s")
+        let metersForSecond = String(localized: Strings.ms.rawValue)
         let parametersTxt = NSMutableAttributedString()
         parametersTxt.append(NSAttributedString(attachment: cloudsImgAtchmnt))
         parametersTxt.append(NSAttributedString(

@@ -22,41 +22,60 @@ struct WeatherItem {
     }
 }
 
-extension String {
+private extension String {
+    enum WeatherIcons: String {
+        case thunderstorm = "Thunderstorm"
+        case drizzle = "Drizzle"
+        case rain = "Rain"
+        case snow = "Snow"
+        case clear = "Clear"
+        case clouds = "Clouds"
+        
+        case mist = "Mist"
+        case smoke = "Smoke"
+        case haze = "Haze"
+        case fog = "Fog"
+        case sand = "Sand"
+        case dust = "Dust"
+        case ash = "Ash"
+        case squall = "Squall"
+        case tornado = "Tornado"
+    }
+    
     var icon: UIImage {
         let weatherIcon = WeatherIcons(rawValue: self)
         var img: UIImage
         switch weatherIcon {
         case .thunderstorm:
-            img = UIImage(named: Icons.coloredSmallLightning.rawValue) ?? UIImage()
+            img = UIImage(resource: .coloredSmallLightning)
         case .drizzle:
-            img = UIImage(named: Icons.coloredSmallCloudsRain.rawValue) ?? UIImage()
+            img = UIImage(resource: .coloredSmallCloudsRain)
         case .rain:
-            img = UIImage(named: Icons.coloredSmallRain.rawValue) ?? UIImage()
+            img = UIImage(resource: .coloredSmallRain)
         case .snow:
-            img = UIImage(named: Icons.coloredSnow.rawValue) ?? UIImage()
+            img = UIImage(resource: .coloredSnow)
         case .clear:
-            img = UIImage(named: Icons.coloredSmallSun.rawValue) ?? UIImage()
+            img = UIImage(resource: .coloredSmallSun)
         case .clouds:
-            img = UIImage(named: Icons.coloredSmallClouds.rawValue) ?? UIImage()
+            img = UIImage(resource: .coloredSmallClouds)
         case .mist:
-            img = UIImage(named: Icons.coloredMist.rawValue) ?? UIImage()
+            img = UIImage(resource: .coloredMist)
         case .smoke:
-            img = UIImage(named: Icons.coloredMist.rawValue) ?? UIImage()
+            img = UIImage(resource: .coloredMist)
         case .haze:
-            img = UIImage(named: Icons.coloredMist.rawValue) ?? UIImage()
+            img = UIImage(resource: .coloredMist)
         case .fog:
-            img = UIImage(named: Icons.coloredMist.rawValue) ?? UIImage()
+            img = UIImage(resource: .coloredMist)
         case .sand:
-            img = UIImage(named: Icons.coloredMist.rawValue) ?? UIImage()
+            img = UIImage(resource: .coloredMist)
         case .dust:
-            img = UIImage(named: Icons.coloredMist.rawValue) ?? UIImage()
+            img = UIImage(resource: .coloredMist)
         case .ash:
-            img = UIImage(named: Icons.coloredMist.rawValue) ?? UIImage()
+            img = UIImage(resource: .coloredMist)
         case .squall:
-            img = UIImage(named: Icons.coloredMist.rawValue) ?? UIImage()
+            img = UIImage(resource: .coloredMist)
         case .tornado:
-            img = UIImage(named: Icons.coloredMist.rawValue) ?? UIImage()
+            img = UIImage(resource: .coloredMist)
         default:
             img = UIImage()
         }

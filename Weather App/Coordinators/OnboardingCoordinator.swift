@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class OnboardingCoordinator: Coordinatable {
+final class OnboardingCoordinator: ModuleCoordinatable {
     let moduleType: Module.ModuleType
     
     private let factory: AppFactory
@@ -26,5 +26,15 @@ final class OnboardingCoordinator: Coordinatable {
         (module.viewModel as? OnboardingViewModel)?.coordinator = self
         self.module = module
         return viewController
+    }
+    
+    func pushViewController() {
+        let childCoordinator = MainScreenPageCoordinator(moduleType: .mainScreenPage, factory: self.factory)
+        
+        self.addChildCoordinator(childCoordinator)
+        
+        let viewControllerToPush = childCoordinator.start()
+        guard let navController = module?.viewController as? UINavigationController else { return }
+        navController.pushViewController(viewControllerToPush, animated: true)
     }
 }

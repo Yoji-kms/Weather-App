@@ -11,9 +11,10 @@ struct Module {
     enum ModuleType {
         case dailyWeatherReport
         case dailyForecast
-        case mainScreen
+        case mainScreen(Coordinates)
         case onboarding
         case settings
+        case mainScreenPage
     }
     
     let type: ModuleType

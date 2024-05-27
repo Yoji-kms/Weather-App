@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class MainScreenCoordinator: Coordinatable {
+final class MainScreenCoordinator: ModuleCoordinatable {
     let moduleType: Module.ModuleType
     
     private let factory: AppFactory
@@ -47,10 +47,6 @@ final class MainScreenCoordinator: Coordinatable {
             childCoordinator = DailyWeatherReportCoordinator(moduleType: type, factory: self.factory)
         case .dailyForecast:
             childCoordinator = DailyForecastCoordinator(moduleType: type, factory: self.factory)
-        case .onboarding:
-            childCoordinator = OnboardingCoordinator(moduleType: type, factory: self.factory)
-        case .settings:
-            childCoordinator = SettingsCoordinator(moduleType: type, factory: self.factory)
         default:
             return
         }

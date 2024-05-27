@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class SettingsCoordinator: Coordinatable {
+final class SettingsCoordinator: ModuleCoordinatable {
     let moduleType: Module.ModuleType
     
     private let factory: AppFactory

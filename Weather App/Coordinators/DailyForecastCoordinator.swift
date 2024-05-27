@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class DailyForecastCoordinator: Coordinatable {
+final class DailyForecastCoordinator: ModuleCoordinatable {
     let moduleType: Module.ModuleType
     
     private let factory: AppFactory

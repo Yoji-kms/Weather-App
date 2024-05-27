@@ -7,13 +7,13 @@
 
 import Foundation
 
-struct CoordinatesResponse: Decodable, Equatable {
-    let lat: Float
-    let lon: Float
-}
-
-extension CoordinatesResponse {
-    func toCoordinates() -> Coordinates {
-        return Coordinates(lat: self.lat, lon: self.lon)
-    }
-}
+//struct CoordinatesResponse: Decodable, Equatable {
+//    let lat: Float
+//    let lon: Float
+//}
+//
+//extension CoordinatesResponse {
+//    func toCoordinates() -> Coordinates {
+//        return Coordinates(lat: self.lat, lon: self.lon)
+//    }
+//}

@@ -29,7 +29,6 @@ extension ForecastEntity {
 
 extension WeatherEntity {
     func toWeather() -> Weather {
-        
         let weather = Weather(
             coord: self.coordWeather?.toCoordinates(),
             weatherItem: self.weatherItem?.toWeatherItem() ?? WeatherItem(),

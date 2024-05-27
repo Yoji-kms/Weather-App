@@ -7,41 +7,40 @@
 
 import Foundation
 
-//let apiKey = "3b1e37249d0c44a535766a620ce6fe9f"
 final class NetworkService {
     static let shared = NetworkService()
     
-    lazy var key = {
-        let keychainSearchingQuery = [
-            kSecClass as String: kSecClassKey,
-            kSecReturnData as String: true
-        ]
-        
-        var item: CFTypeRef?
-        let status = SecItemCopyMatching(keychainSearchingQuery as CFDictionary, &item)
-        
-        guard status != errSecItemNotFound else {
-            let key: [UInt8] = [51, 98, 49, 101, 51, 55, 50, 52, 57, 100, 48, 99, 52, 52, 97, 53, 51, 53, 55, 54, 54, 97, 54, 50, 48, 99, 101, 54, 102, 101, 57, 102]
-            let keyData = Data(key)
-            let keychainItemQuery = [
-                kSecValueData as String: keyData,
-                kSecClass as String: kSecClassKey
-            ]
-            
-            let status = SecItemAdd(keychainItemQuery as CFDictionary, nil)
-            return self.decode(array: key)
-        }
-        
-        guard let keyData = item as? Data else {
-            return nil
-        }
-        
-        let key: [UInt8] = Array(keyData)
+    enum Label: String {
+        case weather = "weather"
+        case geo = "geo"
+    }
+    
+    lazy var weatherKey: String? = {
+        guard let key = self.getKeyFromKeychain(label: .weather) else { return nil }
         return "&appid=\(self.decode(array: key) ?? "")"
     }()
     
-    let forecast = "https://api.openweathermap.org/data/2.5/forecast?lat=59.8944&lon=30.2642&units=metric"
-    let currentWeather = "https://api.openweathermap.org/data/2.5/weather?lat=59.8944&lon=30.2642&units=metric"
+    lazy var geoKey: String? = {
+        guard let key = self.getKeyFromKeychain(label: .geo) else { return nil }
+        return "&apikey=\(self.decode(array: key) ?? "")"
+    }()
+    
+    enum Request {
+        case forecast(Coordinates)
+        case currentWeather(Coordinates)
+        case geo(String)
+    }
+    
+    func getUrl(requestType request: Request) -> String {
+        switch request {
+        case .forecast(let coordinates):
+            return "https://api.openweathermap.org/data/2.5/forecast?lat=\(coordinates.lat)&lon=\(coordinates.lon)&units=metric"
+        case .currentWeather(let coordinates):
+            return "https://api.openweathermap.org/data/2.5/weather?lat=\(coordinates.lat)&lon=\(coordinates.lon)&units=metric"
+        case .geo(let city):
+            return "https://geocode-maps.yandex.ru/1.x/?geocode=\(city)&format=json&results=1"
+        }
+    }
     
     private func encode(key: String) {
         var array:[UInt8] = []
@@ -51,7 +50,48 @@ final class NetworkService {
         print(array)
     }
     
-    private func decode(array: [UInt8]) -> String? {
+    private func decode(array: [UInt8]?) -> String? {
+        guard let array else { return nil }
         return String(data: Data(array), encoding: .utf8)
+    }
+    
+    private func addKeyToKeychain(key: [UInt8], label: String) -> [UInt8] {
+        let keyData = Data(key)
+        let keychainItemQuery: [String: Any] = [
+            kSecValueData as String: keyData,
+            kSecAttrLabel as String: label,
+            kSecClass as String: kSecClassKey
+        ]
+        
+        _ = SecItemAdd(keychainItemQuery as CFDictionary, nil)
+        return key
+    }
+    
+    private func getKeyFromKeychain(label: Label) -> [UInt8]? {
+        let keychainSearchingQuery: [String: Any] = [
+            kSecClass as String: kSecClassKey,
+            kSecAttrLabel as String: label.rawValue,
+            kSecReturnData as String: true
+        ]
+        
+        var item: CFTypeRef?
+        let status = SecItemCopyMatching(keychainSearchingQuery as CFDictionary, &item)
+        guard status != errSecItemNotFound else {
+            var key: [UInt8]
+            switch label {
+            case .weather:
+                key = [51, 98, 49, 101, 51, 55, 50, 52, 57, 100, 48, 99, 52, 52, 97, 53, 51, 53, 55, 54, 54, 97, 54, 50, 48, 99, 101, 54, 102, 101, 57, 102]
+            case .geo:
+                key = [100, 54, 98, 56, 100, 57, 52, 51, 45, 49, 99, 57, 48, 45, 52, 100, 52, 51, 45, 56, 55, 48, 55, 45, 51, 55, 51, 56, 48, 49, 56, 52, 100, 102, 52, 102]
+            }
+            return self.addKeyToKeychain(key: key, label: label.rawValue)
+        }
+        
+        guard let keyData = item as? Data else {
+            return nil
+        }
+        
+        let key: [UInt8] = Array(keyData)
+        return key
     }
 }

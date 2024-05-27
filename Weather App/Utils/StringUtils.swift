@@ -13,4 +13,10 @@ extension String {
         let remainingLetters = self.dropFirst()
         return firstLetter + remainingLetters
     }
+    
+    var localized: String {
+        let string = NSLocalizedString(self, comment: self)
+        return string
+    }
 }
+

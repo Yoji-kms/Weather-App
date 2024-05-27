@@ -6,23 +6,35 @@
 //
 
 import UIKit
+import CoreLocation
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         self.window = UIWindow(windowScene: windowScene)
         
         let coreDataService = CoreDataService()
+        let locationManager = CLLocationManager()
+        let factory = AppFactory(coreDataService: coreDataService, locationManager: locationManager)
         
-        let factory = AppFactory(coreDataService: coreDataService)
+        let rootViewController = self.getRootViewController(manager: locationManager, factory: factory)
         
-        let appCoordinator = MainScreenCoordinator(moduleType: .mainScreen, factory: factory)
-        self.window?.rootViewController = appCoordinator.start()
+        self.window?.rootViewController = rootViewController
         self.window?.makeKeyAndVisible()
+    }
+    
+    private func getRootViewController(manager: CLLocationManager, factory: AppFactory) -> UIViewController {
+        if manager.authorizationStatus == .notDetermined && 
+            !UserDefaults.standard.bool(forKey: UserDefaultKeys.isLocationRequested.rawValue) {
+            let appCoordinator = OnboardingCoordinator(moduleType: .onboarding, factory: factory)
+            return appCoordinator.start()
+        } else {
+            let appCoordinator = MainScreenPageCoordinator(moduleType: .mainScreenPage, factory: factory)
+            return appCoordinator.start()
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

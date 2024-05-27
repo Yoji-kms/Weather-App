@@ -126,9 +126,7 @@ extension Forecast {
             }
             let averageHumidity = sumHumidity / daylyWeathers.count
             
-            let humidityImgAtchmnt = NSTextAttachment(
-                image: UIImage(named: Icons.coloredSmallRain.rawValue) ?? UIImage()
-            )
+            let humidityImgAtchmnt = NSTextAttachment(image: UIImage(resource: .coloredSmallRain))
             humidityImgAtchmnt.bounds = CGRect(x: 0, y: 0, width: 16, height: 16)
             
             let humidityTxt = NSMutableAttributedString()

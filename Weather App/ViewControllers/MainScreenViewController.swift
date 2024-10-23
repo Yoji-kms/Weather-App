@@ -94,7 +94,7 @@ final class MainScreenViewController: UIViewController {
         self.scrollView.refreshControl?.endRefreshing()
     }
     
-    //    MARK: Inits
+//    MARK: Inits
     init(viewModel: MainScreenViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -105,7 +105,7 @@ final class MainScreenViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    //    MARK: Lifecycle
+//    MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
@@ -119,12 +119,12 @@ final class MainScreenViewController: UIViewController {
             guard let self else { return }
             self.mainView.setup(with: self.viewModel.weather)
             self.delegate?.updateTitle(self.viewModel.weather.name ?? "")
-        })
-        
-        self.viewModel.updateStateNet(request: .updateForecast { [weak self] in
-            guard let self else { return }
-            self.forecastCollectionView.reloadData()
-            self.daylyForecastTableView.reloadData()
+            
+            self.viewModel.updateStateNet(request: .updateForecast { [weak self] in
+                guard let self else { return }
+                self.forecastCollectionView.reloadData()
+                self.daylyForecastTableView.reloadData()
+            })
         })
     }
     
@@ -177,7 +177,7 @@ final class MainScreenViewController: UIViewController {
     
 //    MARK: Actions
     @objc private func moreFor24HoursButtonDidTap() {
-        
+        self.viewModel.updateState(viewInput: .moreFor24HoursBtnDidTap)
     }
 }
 

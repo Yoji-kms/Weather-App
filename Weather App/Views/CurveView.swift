@@ -33,6 +33,7 @@ class CurveView: UIView {
         self.setupLayer()
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         self.setupLayer()

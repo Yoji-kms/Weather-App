@@ -17,17 +17,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window = UIWindow(windowScene: windowScene)
         
         let coreDataService = CoreDataService()
-        let locationManager = CLLocationManager()
-        let factory = AppFactory(coreDataService: coreDataService, locationManager: locationManager)
+        let locationService = LocationService()
+        let factory = AppFactory(coreDataService: coreDataService, locationService: locationService)
         
-        let rootViewController = self.getRootViewController(manager: locationManager, factory: factory)
+        let rootViewController = self.getRootViewController(locationService: locationService, factory: factory)
         
         self.window?.rootViewController = rootViewController
         self.window?.makeKeyAndVisible()
     }
     
-    private func getRootViewController(manager: CLLocationManager, factory: AppFactory) -> UIViewController {
-        if manager.authorizationStatus == .notDetermined && 
+    private func getRootViewController(locationService: LocationService, factory: AppFactory) -> UIViewController {
+        if locationService.isNotDeterminedAuthorization &&
             !UserDefaults.standard.bool(forKey: UserDefaultKeys.isLocationRequested.rawValue) {
             let appCoordinator = OnboardingCoordinator(moduleType: .onboarding, factory: factory)
             return appCoordinator.start()

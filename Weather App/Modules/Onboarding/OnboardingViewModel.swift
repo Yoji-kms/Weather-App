@@ -11,10 +11,10 @@ import CoreLocation
 final class OnboardingViewModel: OnboardingViewModelProtocol {
     var coordinator: OnboardingCoordinator?
     
-    let locationManager: CLLocationManager
+    let locationService: LocationService
     
-    init(locationManager: CLLocationManager) {
-        self.locationManager = locationManager
+    init(locationService: LocationService) {
+        self.locationService = locationService
     }
     
     enum ViewInput {
@@ -25,11 +25,14 @@ final class OnboardingViewModel: OnboardingViewModelProtocol {
     func updateState(input: ViewInput) {
         switch input {
         case .acceptDidTap:
-            self.locationManager.requestWhenInUseAuthorization()
-            coordinator?.pushViewController()
+            self.locationService.requestWhenInUseAuthorization() { [weak self] in
+                guard let self else { return }
+                self.coordinator?.pushViewController()
+                UserDefaults.standard.setValue(true, forKey: UserDefaultKeys.isLocationRequested.rawValue)
+            }
         case .denyDidTap:
             coordinator?.pushViewController()
+            UserDefaults.standard.setValue(true, forKey: UserDefaultKeys.isLocationRequested.rawValue)
         }
-        UserDefaults.standard.setValue(true, forKey: "isLocationRequested")
     }
 }

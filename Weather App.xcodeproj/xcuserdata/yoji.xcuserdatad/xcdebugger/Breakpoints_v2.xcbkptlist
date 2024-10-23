@@ -3,4 +3,68 @@
    uuid = "65EA9873-509F-4D2B-B208-3F4054A01FA3"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "37779AF5-42CC-42D0-9BC6-6A75470FF5A4"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Weather App/ViewControllers/MainScreenViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "124"
+            endingLineNumber = "124"
+            landmarkName = "updateAll()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0AF7472F-79F4-4C80-BFD9-91A8268DA3DA"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Weather App/ViewControllers/MainScreenViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
+            landmarkName = "updateAll()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "0AF7472F-79F4-4C80-BFD9-91A8268DA3DA - d7847b398d261775"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in Weather_App.MainScreenViewController.updateAll() -&gt; ()"
+                  moduleName = "Weather App.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yoji/Documents/iOS%20Netology/Weather%20App/Weather%20App/ViewControllers/MainScreenViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "123"
+                  endingLineNumber = "123">
+               </Location>
+               <Location
+                  uuid = "0AF7472F-79F4-4C80-BFD9-91A8268DA3DA - cff344ca4ab5529d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in closure #1 () -&gt; () in Weather_App.MainScreenViewController.updateAll() -&gt; ()"
+                  moduleName = "Weather App.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yoji/Documents/iOS%20Netology/Weather%20App/Weather%20App/ViewControllers/MainScreenViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "123"
+                  endingLineNumber = "123">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

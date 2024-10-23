@@ -10,20 +10,20 @@ import CoreLocation
 
 final class MainScreenPageViewModel: MainScreenPageViewModelProtocol {
     var coordinator: MainScreenPageCoordinator?
-    private let locationManager: CLLocationManager
+    private let locationService: LocationService
+    private let coordinatesServise: CoordinatesService
+    
+    private(set) var data: [Coordinates] = []
     
     enum ViewInput {
         case cityChanged(()->Void)
         case initCity(([UIViewController])->Void)
         case locationButtonDidTap((MainScreenViewController)->Void)
     }
-   
-    private(set) var data: [Coordinates] = []
-    private let coordinatesServise: CoordinatesService
     
-    init(coordinatesServise: CoordinatesService, locationManager: CLLocationManager) {
+    init(coordinatesServise: CoordinatesService, locationService: LocationService) {
         self.coordinatesServise = coordinatesServise
-        self.locationManager = locationManager
+        self.locationService = locationService
     }
     
     func updateState(input: ViewInput) {
@@ -65,16 +65,15 @@ final class MainScreenPageViewModel: MainScreenPageViewModelProtocol {
             
             if
                 !self.data.contains(where: { $0.isCurrentLocation }),
-                self.locationManager.authorizationStatus == .authorizedAlways ||
-                    self.locationManager.authorizationStatus == .authorizedWhenInUse
+                self.locationService.isAuthorized
             {
-                self.locationManager.requestLocation()
-                guard
-                    let newCoordinates = self.locationManager.location?.coordinate.coordinates
-                else { return }
-                
-                self.coordinatesServise.saveCoordinates(newCoordinates) { newDbCoordinates in
-                    self.addMainScreenControllersForData(completion: completion)
+                self.locationService.getLocation() { [weak self] newCoordinates in
+                    guard let self else { return }
+                    self.coordinatesServise.saveCoordinates(newCoordinates) { newDbCoordinates in
+                        self.data = newDbCoordinates
+                            .map { $0.toCoordinates() ?? Coordinates() }
+                        self.addMainScreenControllersForData(completion: completion)
+                    }
                 }
             } else if !self.data.isEmpty {
                 self.addMainScreenControllersForData(completion: completion)

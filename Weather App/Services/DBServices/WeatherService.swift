@@ -15,6 +15,7 @@ final class WeatherService: WeatherServiceProtocol {
     
     private lazy var backgroundContext: NSManagedObjectContext = {
         let context = self.coreDataService.persistentContaner.newBackgroundContext()
+        context.mergePolicy = NSOverwriteMergePolicy
         return context
     }()
     
@@ -38,7 +39,7 @@ final class WeatherService: WeatherServiceProtocol {
                     completion(self.data)
                 }
             } catch {
-                print("🔻 Error: \(error.localizedDescription)")
+                print("🔻 Weather Error: \(error.localizedDescription)")
                 self.data = []
                 completion(self.data)
             }
@@ -47,7 +48,6 @@ final class WeatherService: WeatherServiceProtocol {
     
     func saveWeather(
         coordinates: Coordinates?,
-        newCoordinates: Coordinates? = nil,
         response: WeatherResponse,
         completion: @escaping ([WeatherEntity])->Void
     ) {
@@ -56,23 +56,27 @@ final class WeatherService: WeatherServiceProtocol {
             guard let self else { return }
             if self.data.contains(where: { dbWeather in
                 let dbCoordinates = dbWeather.coordWeather?.toCoordinates()
-                return dbCoordinates == coordinates && (dbCoordinates != nil)
+                
+                let isDbCoordinatesNotNil = dbCoordinates != nil
+                let isCoordinatesEqual = dbCoordinates == coordinates
+                let isCurrentLocation = coordinates?.isCurrentLocation ?? false
+                
+                return isCoordinatesEqual && isDbCoordinatesNotNil || isCurrentLocation
             }) {
                 guard let coordinates else { return }
                 self.getWeatherBy(coordinates: coordinates) { dbWeather in
                     guard let dbWeather else { return }
-                    self.updateWeather(dbWeather, context: context, response: response, newCoordinates: newCoordinates) { newDbWeather in
+                    self.updateWeather(dbWeather, context: context, response: response) { _ in
                         do {
                             if context.hasChanges {
                                 try context.save()
                                 self.coreDataService.mainContext.perform { [weak self] in
                                     guard let self else { return }
-                                    self.data.replace([dbWeather], with: [newDbWeather])
                                     completion(self.data)
                                 }
                             }
                         } catch {
-                            print("🔴 Core data error:\(error.localizedDescription)")
+                            print("🔴 Weather update Core data error:\(error.localizedDescription)")
                         }
                     }
                 }
@@ -88,7 +92,7 @@ final class WeatherService: WeatherServiceProtocol {
                             }
                         }
                     } catch {
-                        print("🔴 Core data error:\(error.localizedDescription)")
+                        print("🔴 Weather create Core data error:\(error.localizedDescription)")
                     }
                 }
             }
@@ -101,6 +105,9 @@ final class WeatherService: WeatherServiceProtocol {
             if self.data.contains(where: { dbWeather in
                 guard let dbCoord = dbWeather.coordWeather?.toCoordinates() else {
                     return false
+                }
+                if coordinates.isCurrentLocation {
+                    return dbCoord.isCurrentLocation
                 }
                 return dbCoord == coordinates
             }) {
@@ -123,7 +130,6 @@ final class WeatherService: WeatherServiceProtocol {
         _ weather: WeatherEntity,
         context: NSManagedObjectContext,
         response: WeatherResponse,
-        newCoordinates: Coordinates?,
         completion: @escaping (WeatherEntity)->Void
     ) {
         let dbWeatherItem = self.createWeatherItem(context: context, response: response)
@@ -135,18 +141,19 @@ final class WeatherService: WeatherServiceProtocol {
         
         guard let dbWeather = context.object(with: weather.objectID) as? WeatherEntity else { return }
         
-        if
-            let coordinates = weather.coordWeather?.toCoordinates(),
-            let newCoordinates
-        {
-            self.coordinatesService.updateCoordinates(coordinates, newCoordinates: newCoordinates) { newCoordinatesData in
-                let dbCoordinates = newCoordinatesData.filter {
-                    $0.toCoordinates() == newCoordinates
-                }.first 
-                if let dbCoordinates {
-                    dbWeather.coordWeather = context.object(with: dbCoordinates.objectID) as? CoordinatesEntity
-                }
+        let dbCoord = self.coordinatesService.data.filter {
+            guard let coordinates = weather.coordWeather else { return false }
+            if coordinates.isCurrentLocation {
+                return $0.isCurrentLocation
             }
+            return $0 == coordinates
+        }.first
+        if let dbCoord {
+            context.refreshAllObjects()
+            let dbCoordinates = context.object(with: dbCoord.objectID) as? CoordinatesEntity
+            dbWeather.coordWeather = dbCoordinates
+        } else {
+            dbWeather.coordWeather = nil
         }
         
         dbWeather.dt = Date(timeIntervalSince1970: response.dt)

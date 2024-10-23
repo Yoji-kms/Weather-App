@@ -54,7 +54,7 @@ final class MainScreenCoordinator: ModuleCoordinatable {
         self.addChildCoordinator(childCoordinator)
         
         let viewControllerToPush = childCoordinator.start()
-        guard let navController = module?.viewController as? UINavigationController else { return }
-        navController.pushViewController(viewControllerToPush, animated: true)
+        let navController = module?.viewController.navigationController
+        navController?.pushViewController(viewControllerToPush, animated: true)
     }
 }

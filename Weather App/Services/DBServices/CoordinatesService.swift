@@ -14,6 +14,7 @@ final class CoordinatesService {
     
     private lazy var backgroundContext: NSManagedObjectContext = {
         let context = self.coreDataService.persistentContaner.newBackgroundContext()
+        context.mergePolicy = NSOverwriteMergePolicy
         return context
     }()
     
@@ -25,13 +26,14 @@ final class CoordinatesService {
     }
     
     func fetch(completion: @escaping ([CoordinatesEntity]) -> Void) {
-        self.backgroundContext.perform { [weak self] in
+        let context = self.backgroundContext
+        context.perform { [weak self] in
             guard let self else { return }
             let fetchRequest = CoordinatesEntity.fetchRequest()
             let sortDescriptor = NSSortDescriptor(key: "isCurrentLocation", ascending: true)
             fetchRequest.sortDescriptors = [sortDescriptor]
             do {
-                self.data = try backgroundContext.fetch(fetchRequest).map { $0 }
+                self.data = try context.fetch(fetchRequest).map { $0 }
                 self.coreDataService.mainContext.perform { [weak self] in
                     guard let self else { return }
                     completion(self.data)
@@ -67,7 +69,7 @@ final class CoordinatesService {
                             }
                         }
                     } catch {
-                        print("🔴 Core data error:\(error.localizedDescription)")
+                        print("🔴 Coordinates create Core data error:\(error.localizedDescription)")
                     }
                 }
             } else {
@@ -87,32 +89,34 @@ final class CoordinatesService {
         let context = self.backgroundContext
         context.perform { [weak self] in
             guard let self else { return }
+            
             if self.data.contains(
                 where: { $0.lat == coordinates.lat && $0.lon == coordinates.lon && $0.isCurrentLocation }
             ) {
                 guard 
-                    let dbCoordinatesWithoutContext = self.getCoordinates(coordinates),
-                    let dbCoordinates = context.object(with: dbCoordinatesWithoutContext.objectID) as? CoordinatesEntity
+                    let dbCoordinatesWithoutContext = self.getCoordinates(coordinates)
+                    
                 else { return }
                 
-                dbCoordinates.lat = newCoordinates.lat
-                dbCoordinates.lon = newCoordinates.lon
+                let dbCoordinates = context.object(with: dbCoordinatesWithoutContext.objectID) as? CoordinatesEntity
+                
+                dbCoordinates?.lat = newCoordinates.lat
+                dbCoordinates?.lon = newCoordinates.lon
+                
                 do {
                     if context.hasChanges {
                         try context.save()
                         self.coreDataService.mainContext.perform { [weak self] in
-                            guard 
-                                let self,
-                                let index = self.data.firstIndex(where: {
-                                    $0.lat == coordinates.lat && $0.lon == coordinates.lon
-                                })
-                            else { return }
-                            self.data.replaceSubrange(index...index, with: [dbCoordinates])
-                            completion(self.data)
+                            guard let self else { return }
+                            if dbCoordinates != nil {
+                                completion(self.data)
+                            } else {
+                                return
+                            }
                         }
                     }
                 } catch {
-                    print("🔴 Core data error:\(error.localizedDescription)")
+                    print("🔴 Coordinates update Core data error:\(error.localizedDescription)")
                 }
             } else {
                 self.coreDataService.mainContext.perform { [weak self] in
@@ -142,5 +146,32 @@ final class CoordinatesService {
         return self.data.filter {
             $0.lat == coordinates.lat && $0.lon == coordinates.lon
         }.first
+    }
+    
+    func getCoordinatesBy(coordinates: Coordinates, completion: @escaping (CoordinatesEntity?)->Void) {
+        self.backgroundContext.perform { [weak self] in
+            guard let self else { return }
+            if self.data.contains(where: { dbCoord in
+                guard let dbCoordinates = dbCoord.toCoordinates() else {
+                    return false
+                }
+                if coordinates.isCurrentLocation {
+                    return dbCoordinates.isCurrentLocation
+                }
+                return dbCoordinates == coordinates
+            }) {
+                let fetchRequest = CoordinatesEntity.fetchRequest()
+                let predicate = NSPredicate(
+                    format: "lat == %f AND lon == %f",
+                    coordinates.lat,
+                    coordinates.lon
+                )
+                fetchRequest.predicate = predicate
+                let savedCoordinates = try? self.backgroundContext.fetch(fetchRequest) as [CoordinatesEntity]
+                self.coreDataService.mainContext.perform {
+                    completion(savedCoordinates?.first)
+                }
+            }
+        }
     }
 }

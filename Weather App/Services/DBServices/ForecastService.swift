@@ -15,6 +15,7 @@ final class ForecastService: WeatherServiceProtocol {
     
     private lazy var backgroundContext: NSManagedObjectContext = {
         let context = self.coreDataService.persistentContaner.newBackgroundContext()
+        context.mergePolicy = NSOverwriteMergePolicy
         return context
     }()
     
@@ -38,7 +39,7 @@ final class ForecastService: WeatherServiceProtocol {
                     completion(self.data)
                 }
             } catch {
-                print("🔻 Error: \(error.localizedDescription)")
+                print("🔻 Forecast CoreData error: \(error.localizedDescription)")
                 self.data = []
                 completion(self.data)
             }
@@ -50,6 +51,9 @@ final class ForecastService: WeatherServiceProtocol {
             guard let self else { return }
             if self.data.contains(where: { dbForecast in
                 guard let dbCoord = dbForecast.city?.coordCity?.toCoordinates() else { return false }
+                if coordinates.isCurrentLocation {
+                    return coordinates.isCurrentLocation
+                }
                 return dbCoord == coordinates
             }) {
                 let fetchRequest = ForecastEntity.fetchRequest()
@@ -72,7 +76,6 @@ final class ForecastService: WeatherServiceProtocol {
     
     func saveForecast(
         coordinates: Coordinates,
-        newCoordinates: Coordinates? = nil,
         response: ForecastResponse,
         completion: @escaping ([ForecastEntity]) -> Void
     ) {
@@ -82,22 +85,24 @@ final class ForecastService: WeatherServiceProtocol {
             guard let self else { return }
             if self.data.contains(where: { dbForecast in
                 let dbCoordinates = dbForecast.city?.coordCity?.toCoordinates()
+                if coordinates.isCurrentLocation {
+                    return dbCoordinates?.isCurrentLocation ?? false
+                }
                 return dbCoordinates == coordinates
             }) {
                 self.getForecastBy(coordinates: coordinates) { dbForecast in
                     guard let dbForecast else { return }
-                    self.updateForecast(dbForecast, context: context, response: response, newCoordinates: newCoordinates) { newDbForecast in
+                    self.updateForecast(dbForecast, context: context, response: response) { _ in
                         do {
                             if context.hasChanges {
                                 try context.save()
                                 self.coreDataService.mainContext.perform { [weak self] in
                                     guard let self else { return }
-                                    self.data.replace([dbForecast], with: [newDbForecast])
                                     completion(self.data)
                                 }
                             }
                         } catch {
-                            print("🔴 Core data error:\(error.localizedDescription)")
+                            print("🔴 Forecast update Core data error:\(error.localizedDescription)")
                         }
                     }
                 }
@@ -113,7 +118,7 @@ final class ForecastService: WeatherServiceProtocol {
                             }
                         }
                     } catch {
-                        print("🔴 Core data error:\(error.localizedDescription)")
+                        print("🔴 Forecast create Core data error:\(error.localizedDescription)")
                     }
                 }
             }
@@ -136,25 +141,9 @@ final class ForecastService: WeatherServiceProtocol {
     }
     
     private func updateCity(
-        _ city: CityEntity, context: NSManagedObjectContext, response: ForecastResponse, newCoordinates: Coordinates?
+        _ city: CityEntity, context: NSManagedObjectContext, response: ForecastResponse
     ) -> CityEntity? {
         let dbCity = context.object(with: city.objectID) as? CityEntity
-        
-        if 
-            let newCoordinates,
-            newCoordinates.isCurrentLocation,
-            let coordinates = dbCity?.coordCity?.toCoordinates()
-        {
-            self.coordinatesService.updateCoordinates(coordinates, newCoordinates: newCoordinates) { newCoordinatesData in
-                let dbCoordinates = newCoordinatesData.filter {
-                    $0.toCoordinates() == newCoordinates
-                }.first
-                if let dbCoordinates {
-                    dbCity?.coordCity = context.object(with: dbCoordinates.objectID) as? CoordinatesEntity
-                }
-            }
-        }
-        
         dbCity?.name = response.city.name
         dbCity?.sunrise = Date(timeIntervalSince1970: response.city.sunrise)
         dbCity?.sunset = Date(timeIntervalSince1970: response.city.sunset)
@@ -166,7 +155,10 @@ final class ForecastService: WeatherServiceProtocol {
         let cities = self.data.map { $0.city ?? CityEntity() }
         return cities.filter { dbCity in
             guard let dbCoord = dbCity.coordCity else { return false }
-            return dbCoord.lat == coordinates.lat && dbCoord.lon == coordinates.lon
+            if coordinates.isCurrentLocation {
+                return dbCoord.isCurrentLocation
+            }
+            return dbCoord.toCoordinates() == coordinates
         }.first
     }
     
@@ -185,10 +177,8 @@ final class ForecastService: WeatherServiceProtocol {
             ) { dbWeather in
                 guard let addingDbWeather = context.object(with: dbWeather.objectID) as? WeatherEntity else { return }
                 dbForecast.addToWeather(addingDbWeather)
-                print(dbForecast)
             }
         }
-        print(dbForecast)
         completion(dbForecast)
     }
     
@@ -196,14 +186,13 @@ final class ForecastService: WeatherServiceProtocol {
         _ forecast: ForecastEntity,
         context: NSManagedObjectContext,
         response: ForecastResponse,
-        newCoordinates: Coordinates?,
         completion: @escaping (ForecastEntity) -> Void
     ) {
         guard
             let dbForecast = context.object(with: forecast.objectID) as? ForecastEntity,
             let city = dbForecast.city,
             let dbCity = context.object(with: city.objectID) as? CityEntity,
-            let newDbCity = self.updateCity(dbCity, context: context, response: response, newCoordinates: newCoordinates)
+            let newDbCity = self.updateCity(dbCity, context: context, response: response)
         else { return }
         
         dbForecast.city = context.object(with: newDbCity.objectID) as? CityEntity

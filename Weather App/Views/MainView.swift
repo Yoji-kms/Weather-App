@@ -173,7 +173,6 @@ final class MainView: UIView {
     }
     
     private func getParametersText(weather: Weather) -> NSAttributedString {
-     
         let humidityImgAtchmnt = NSTextAttachment(image: UIImage(resource: .coloredHumidityLight))
         humidityImgAtchmnt.bounds = CGRect(x: 0, y: 0, width: 13, height: 15)
         let windImgAtchmnt = NSTextAttachment(image: UIImage(resource: .coloredWindLight))

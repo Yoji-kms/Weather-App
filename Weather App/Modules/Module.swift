@@ -10,7 +10,7 @@ import UIKit
 struct Module {
     enum ModuleType {
         case dailyWeatherReport
-        case dailyForecast
+        case dailyForecast(Forecast)
         case mainScreen(Coordinates)
         case onboarding
         case settings

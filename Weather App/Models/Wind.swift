@@ -26,37 +26,37 @@ extension Int {
     var windDirection: String {
         switch self {
         case 349...360, 0...11:
-            return NSLocalizedString("N", comment: "N")
+            return String(localized: "N")
         case 12...34:
-            return NSLocalizedString("NNE", comment: "NNE")
+            return String(localized: "NNE")
         case 35...56:
-            return NSLocalizedString("NE", comment: "NE")
+            return String(localized: "NE")
         case 57...79:
-            return NSLocalizedString("ENE", comment: "ENE")
+            return String(localized: "ENE")
         case 80...101:
-            return NSLocalizedString("E", comment: "E")
+            return String(localized: "E")
         case 102...124:
-            return NSLocalizedString("ESE", comment: "ESE")
+            return String(localized: "ESE")
         case 125...146:
-            return NSLocalizedString("SE", comment: "SE")
+            return String(localized: "SE")
         case 147...169:
-            return NSLocalizedString("SSE", comment: "SSE")
+            return String(localized: "SSE")
         case 170...191:
-            return NSLocalizedString("S", comment: "S")
+            return String(localized: "S")
         case 192...214:
-            return NSLocalizedString("SSW", comment: "SSW")
+            return String(localized: "SSW")
         case 215...236:
-            return NSLocalizedString("SW", comment: "SW")
+            return String(localized: "SW")
         case 237...259:
-            return NSLocalizedString("WSW", comment: "WSW")
+            return String(localized: "WSW")
         case 260...281:
-            return NSLocalizedString("W", comment: "W")
+            return String(localized: "W")
         case 282...304:
-            return NSLocalizedString("WNW", comment: "WNW")
+            return String(localized: "WNW")
         case 305...326:
-            return NSLocalizedString("NW", comment: "NW")
+            return String(localized: "NW")
         case 327...348:
-            return NSLocalizedString("NNW", comment: "NNW")
+            return String(localized: "NNW")
         default:
             return ""
         }

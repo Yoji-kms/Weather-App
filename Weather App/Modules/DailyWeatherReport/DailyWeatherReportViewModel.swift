@@ -10,5 +10,9 @@ import Foundation
 final class DailyWeatherReportViewModel: DailyWeatherReportViewModelProtocol {
     weak var coordinator: DailyWeatherReportCoordinator?
     
-    
+//    let forecast: Forecast
+//    
+//    init(forecast: Forecast) {
+//        self.forecast = forecast
+//    }
 }

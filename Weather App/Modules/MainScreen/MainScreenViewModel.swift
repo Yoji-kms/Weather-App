@@ -159,7 +159,7 @@ final class MainScreenViewModel: MainScreenViewModelProtocol {
     func updateState(viewInput: ViewInput) {
         switch viewInput {
         case .moreFor24HoursBtnDidTap:
-            self.coordinator?.pushViewController(ofType: .dailyForecast)
+            self.coordinator?.pushViewController(ofType: .dailyForecast(self.forecast))
         case .daylyWeatherDidSelect:
             self.coordinator?.pushViewController(ofType: .dailyWeatherReport)
         }

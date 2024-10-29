@@ -29,10 +29,10 @@ final class AppFactory {
             let viewModel = DailyWeatherReportViewModel()
             let viewController: UIViewController = DailyWeatherReportViewController(viewModel: viewModel)
             return Module(type: .dailyWeatherReport, viewModel: viewModel, viewController: viewController)
-        case .dailyForecast:
-            let viewModel = DailyForecastViewModel()
+        case .dailyForecast(let forecast):
+            let viewModel = DailyForecastViewModel(forecast: forecast)
             let viewController: UIViewController = DailyForecastViewController(viewModel: viewModel)
-            return Module(type: .dailyForecast, viewModel: viewModel, viewController: viewController)
+            return Module(type: .dailyForecast(forecast), viewModel: viewModel, viewController: viewController)
         case .mainScreen(let coordinates):
             let viewModel = MainScreenViewModel(
                 weatherService: self.weatherService,

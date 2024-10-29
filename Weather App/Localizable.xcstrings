@@ -80,7 +80,14 @@
       }
     },
     "Current location" : {
-
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Текущее местоположение"
+          }
+        }
+      }
     },
     "Daily forecast" : {
       "extractionState" : "manual",
@@ -195,7 +202,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "По ощущениям"
+            "value" : "По ощущению"
           }
         }
       }
@@ -495,7 +502,14 @@
       }
     },
     "There is no such city" : {
-
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Такого города не существует"
+          }
+        }
+      }
     },
     "W" : {
       "extractionState" : "manual",

@@ -1,43 +1,138 @@
 //
-//  DaylyForecastTableViewCell.swift
+//  Untitled.swift
 //  Weather App
 //
-//  Created by Yoji on 04.02.2024.
+//  Created by Yoji on 23.10.2024.
 //
-
 import UIKit
 
 final class DaylyForecastTableViewCell: UITableViewCell {
-    private lazy var dateLbl: UILabel = {
-        let lbl = UILabel()
-        lbl.font = .systemFont(ofSize: 16)
-        lbl.textColor = .systemGray
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        return lbl
-    }()
-    private lazy var humidityLbl: UILabel = {
-        let lbl = UILabel()
-        lbl.font = .systemFont(ofSize: 12)
-        lbl.textColor = UIColor(resource: .accent)
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        return lbl
-    }()
-    private lazy var descriptionLbl: UILabel = {
-        let lbl = UILabel()
-        lbl.font = .systemFont(ofSize: 16)
-        lbl.numberOfLines = 0
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        return lbl
-    }()
-    private lazy var temperatureLbl: UILabel = {
-        let lbl = UILabel()
-        lbl.font = .systemFont(ofSize: 18)
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        return lbl
+    let primaryTextColor: UIColor = .black
+    let secondaryTextColor: UIColor = .systemGray
+    
+    let primaryFont: UIFont = .systemFont(ofSize: 14)
+    let primaryBoldFont: UIFont = .systemFont(ofSize: 18, weight: .bold)
+    
+    private lazy var dateLabel: UILabel = {
+        let label = UILabel()
+        label.font = primaryBoldFont
+        label.textColor = primaryTextColor
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
     
+    private lazy var timeLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = primaryFont
+        label.textColor = secondaryTextColor
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
     
-    // MARK: Lifecycle
+    private lazy var temperatureLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = primaryBoldFont
+        label.textColor = primaryTextColor
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var descriptionLabel: UILabel = {
+        let label = UILabel()
+        label.showsExpansionTextWhenTruncated = true
+        label.numberOfLines = 1
+        label.lineBreakMode = .byTruncatingTail
+        label.font = primaryFont
+        label.textColor = primaryTextColor
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var feelsLikeLabel: UILabel = {
+        let label = UILabel()
+        label.font = primaryFont
+        label.textColor = primaryTextColor
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var windLabel: UILabel = {
+        let label = UILabel()
+        label.font = primaryFont
+        label.textColor = primaryTextColor
+
+        let windImgAtchmnt = NSTextAttachment(image: UIImage(resource: .coloredWind))
+        windImgAtchmnt.bounds = CGRect(x: 0, y: 0, width: 15, height: 10)
+        let windText = String(localized: Strings.wind.rawValue)
+
+        let attributedText = windText.with(attachment: windImgAtchmnt)
+        
+        label.attributedText = attributedText
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var windValueLabel: UILabel = {
+        let label = UILabel()
+        label.font = primaryFont
+        label.textColor = secondaryTextColor
+        label.textAlignment = .right
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var humidityLabel: UILabel = {
+        let label = UILabel()
+        label.font = primaryFont
+        label.textColor = primaryTextColor
+        let humidityImgAtchmnt = NSTextAttachment(image: UIImage(resource: .coloredSmallRain))
+        humidityImgAtchmnt.bounds = CGRect(x: 0, y: 0, width: 11, height: 13)
+        let humidityText = String(localized: Strings.humidity.rawValue)
+
+        let attributedText = humidityText.with(attachment: humidityImgAtchmnt)
+        
+        label.attributedText = attributedText
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var humidityValueLabel: UILabel = {
+        let label = UILabel()
+        label.font = primaryFont
+        label.textColor = secondaryTextColor
+        label.textAlignment = .right
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var cloudsLabel: UILabel = {
+        let label = UILabel()
+        label.font = primaryFont
+        label.textColor = primaryTextColor
+        
+        let cloudsImgAtchmnt = NSTextAttachment(image: UIImage(resource: .coloredSmallClouds))
+        cloudsImgAtchmnt.bounds = CGRect(x: 0, y: 0, width: 14, height: 10)
+        let cloudsText = String(localized: Strings.cloudiness.rawValue)
+
+        let attributedText = cloudsText.with(attachment: cloudsImgAtchmnt)
+        
+        label.attributedText = attributedText
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var cloudsValueLabel: UILabel = {
+        let label = UILabel()
+        label.font = primaryFont
+        label.textColor = secondaryTextColor
+        label.textAlignment = .right
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+// MARK: Lifecycle
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -46,115 +141,142 @@ final class DaylyForecastTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.setupViews()
+        self.backgroundColor = .lightBlue
     }
     
     override func prepareForReuse() {
-        self.dateLbl.text = nil
-        self.humidityLbl.text = nil
-        self.descriptionLbl.text = nil
-        self.temperatureLbl.text = nil
+        self.dateLabel.text = nil
+        self.timeLabel.text = nil
+        self.temperatureLabel.text = nil
+        self.descriptionLabel.attributedText = nil
+        self.feelsLikeLabel.text = nil
+        self.windValueLabel.text = nil
+        self.humidityValueLabel.text = nil
+        self.cloudsValueLabel.text = nil
     }
-    
-    func setup(with forecast: Forecast, date: Date) {
-        let dateLblTxt = self.getDateLblTxt(date)
-        let humidityLblTxt = forecast.getParameterByDate(date, parameter: .humidity)
-        let descriptionLblTxt = forecast.getDescriptionByDate(date)
-        let temperatureLblTxt = forecast.getParameterByDate(date, parameter: .temperature)
         
-        self.dateLbl.text = dateLblTxt
-        self.humidityLbl.attributedText = humidityLblTxt
-        self.descriptionLbl.text = descriptionLblTxt
-        self.temperatureLbl.attributedText = temperatureLblTxt
+    func setup(with weather: Weather) {
+        let dateLabelText = weather.dateText
+        let timeLabelText = weather.timeText
+        let temperatureLabelText = weather.temperatureText
+        let descriptionLabelText = weather.weatherItem.description.capitalizedSentence
+        let descriptionIcon = weather.weatherItem.icon
+        let feelsLikeLabelText = weather.feelsLikeText
+        let windLabelText = weather.windText
+        let humidityLabelText = weather.humidityText
+        let cloudsLabelText = weather.cloudsText
+        
+        let descriptionAttachment = NSTextAttachment(image: descriptionIcon)
+        descriptionAttachment.bounds = CGRect(x: 0, y: 0, width: 12, height: 12)
+        
+        let descriptionAttributedText = descriptionLabelText.with(attachment: descriptionAttachment)
+        
+        self.dateLabel.text = dateLabelText
+        self.timeLabel.text = timeLabelText
+        self.temperatureLabel.text = temperatureLabelText
+        self.descriptionLabel.attributedText = descriptionAttributedText
+        self.feelsLikeLabel.text = feelsLikeLabelText
+        self.windValueLabel.text = windLabelText
+        self.humidityValueLabel.text = humidityLabelText
+        self.cloudsValueLabel.text = cloudsLabelText
     }
     
     private func setupViews() {
-        self.layer.cornerRadius = 5
-        self.backgroundColor = UIColor(resource: .lightBlue)
-        
-        self.addSubview(self.dateLbl)
-        self.addSubview(self.humidityLbl)
-        self.addSubview(self.descriptionLbl)
-        self.addSubview(self.temperatureLbl)
-        
+        self.addSubview(self.dateLabel)
+        self.addSubview(self.timeLabel)
+        self.addSubview(self.temperatureLabel)
+        self.addSubview(self.descriptionLabel)
+        self.addSubview(self.feelsLikeLabel)
+        self.addSubview(self.windLabel)
+        self.addSubview(self.windValueLabel)
+        self.addSubview(self.humidityLabel)
+        self.addSubview(self.humidityValueLabel)
+        self.addSubview(self.cloudsLabel)
+        self.addSubview(self.cloudsValueLabel)
         
         NSLayoutConstraint.activate([
-            self.dateLbl.topAnchor.constraint(equalTo: self.topAnchor, constant: 8),
-            self.dateLbl.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8),
+            self.dateLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 16),
+            self.dateLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
             
-            self.humidityLbl.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8),
-            self.humidityLbl.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8),
+            self.timeLabel.topAnchor.constraint(equalTo: self.dateLabel.bottomAnchor, constant: 8),
+            self.timeLabel.widthAnchor.constraint(equalToConstant: 64),
             
-            self.descriptionLbl.leadingAnchor.constraint(equalTo: self.dateLbl.trailingAnchor, constant: 16),
-            self.descriptionLbl.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            self.descriptionLbl.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.55),
+            self.temperatureLabel.topAnchor.constraint(equalTo: self.timeLabel.bottomAnchor, constant: 8),
+            self.temperatureLabel.widthAnchor.constraint(equalToConstant: 64),
             
-            self.temperatureLbl.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -8),
-            self.temperatureLbl.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+            self.descriptionLabel.topAnchor.constraint(equalTo: self.dateLabel.bottomAnchor, constant: 8),
+            self.descriptionLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 64),
+            self.descriptionLabel.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.4),
+            
+            self.feelsLikeLabel.leadingAnchor.constraint(equalTo: self.descriptionLabel.trailingAnchor),
+            self.feelsLikeLabel.bottomAnchor.constraint(equalTo: self.descriptionLabel.bottomAnchor),
+            
+            self.windLabel.topAnchor.constraint(equalTo: self.descriptionLabel.bottomAnchor, constant: 8),
+            self.windLabel.leadingAnchor.constraint(equalTo: self.descriptionLabel.leadingAnchor),
+            
+            self.windValueLabel.bottomAnchor.constraint(equalTo: self.windLabel.bottomAnchor),
+            self.windValueLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
+            
+            self.humidityLabel.topAnchor.constraint(equalTo: self.windLabel.bottomAnchor, constant: 8),
+            self.humidityLabel.leadingAnchor.constraint(equalTo: self.descriptionLabel.leadingAnchor),
+            
+            self.humidityValueLabel.bottomAnchor.constraint(equalTo: self.humidityLabel.bottomAnchor),
+            self.humidityValueLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
+            
+            self.cloudsLabel.topAnchor.constraint(equalTo: self.humidityLabel.bottomAnchor, constant: 8),
+            self.cloudsLabel.leadingAnchor.constraint(equalTo: self.descriptionLabel.leadingAnchor),
+            
+            self.cloudsValueLabel.bottomAnchor.constraint(equalTo: self.cloudsLabel.bottomAnchor),
+            self.cloudsValueLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
         ])
-    }
-    
-    private func getDateLblTxt(_ date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd/MM"
-        let txt = dateFormatter.string(from: date)
-        return txt
     }
 }
 
-extension Forecast {
-    enum Parameters {
-        case humidity
-        case temperature
+private extension Weather {
+    var dateText: String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EE dd/MM"
+        let txt = dateFormatter.string(from: self.dt)
+        return txt
     }
     
-    func getDescriptionByDate(_ date: Date) -> String {
-        let daylyWeathers = self.list.filter { $0.dt.isEqualWithDate(date) }
-        
-        let daylyWeathersContainsMidday = daylyWeathers.contains(where: { $0.dt.isMidday })
-        let weather = daylyWeathersContainsMidday ? daylyWeathers.filter { $0.dt.isMidday }.last : daylyWeathers.last
-        return weather?.weatherItem.description.capitalizedSentence ?? ""
+    var timeText: String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm"
+        let txt = dateFormatter.string(from: self.dt)
+        return txt
     }
     
-    func getParameterByDate(_ date: Date, parameter: Parameters) -> NSAttributedString {
-        let daylyWeathers = self.list.filter { $0.dt.isEqualWithDate(date) }
-        
-        switch parameter {
-        case .humidity:
-            var sumHumidity: Int = 0
-            daylyWeathers.compactMap { $0.main.humidity }.forEach { humidity in
-                sumHumidity += humidity
-            }
-            let averageHumidity = sumHumidity / daylyWeathers.count
-            
-            let humidityImgAtchmnt = NSTextAttachment(image: UIImage(resource: .coloredSmallRain))
-            humidityImgAtchmnt.bounds = CGRect(x: 0, y: 0, width: 16, height: 16)
-            
-            let humidityTxt = NSMutableAttributedString()
-            humidityTxt.append(NSAttributedString(attachment: humidityImgAtchmnt))
-            humidityTxt.append(NSAttributedString(string: " \(averageHumidity)%"))
-            return humidityTxt
-        case .temperature:
-            let temperatureTxt = NSMutableAttributedString()
-            if daylyWeathers.count == 1 {
-                temperatureTxt.append(NSAttributedString(
-                    string: "\(daylyWeathers.first?.main.temp ?? 0)º ")
-                )
-            } else {
-                var minTemp = daylyWeathers.first?.main.temp ?? 0
-                var maxTemp = minTemp
-                daylyWeathers.forEach { weather in
-                    let temperature = weather.main.temp
-                    minTemp = temperature < minTemp ? temperature : minTemp
-                    maxTemp = temperature > maxTemp ? temperature : maxTemp
-                }
-                temperatureTxt.append(NSAttributedString(string: "\(minTemp)º..\(maxTemp)º "))
-            }
-            let arrowAttachment = NSTextAttachment(
-                image: UIImage(systemName: "chevron.right") ?? UIImage()
-            )
-            arrowAttachment.bounds = CGRect(x: 0, y: 0, width: 6, height: 9.5)
-            temperatureTxt.append(NSAttributedString(attachment: arrowAttachment))
-            return temperatureTxt
-        }
+    var temperatureText: String {
+        return "\(self.main.temp)º"
+    }
+    
+    var feelsLikeText: String {
+        let feelsLikeString = String(localized: Strings.feelsLike.rawValue)
+        return "\(feelsLikeString) \(self.main.feelsLike)º"
+    }
+    
+    var windText: String {
+        let metersPerSecond = String(localized: Strings.ms.rawValue)
+        let direction = self.wind.windDirection
+        let speed = self.wind.speed
+        return "\(speed) \(metersPerSecond) \(direction)"
+    }
+    
+    var humidityText: String {
+        return "\(self.main.humidity)%"
+    }
+    
+    var cloudsText: String {
+        return "\(self.clouds.all)%"
+    }
+}
+
+private extension String {
+    func with(attachment: NSTextAttachment) -> NSAttributedString {
+        let attributedText = NSMutableAttributedString()
+        attributedText.append(NSAttributedString(attachment: attachment))
+        attributedText.append(NSAttributedString(string: " \(self)"))
+        return attributedText
     }
 }

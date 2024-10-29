@@ -70,8 +70,8 @@ final class MainScreenViewController: UIViewController {
     private lazy var daylyForecastTableView: UITableView = {
         let tblView = UITableView(frame: .zero, style: .insetGrouped)
         tblView.register(
-            DaylyForecastTableViewCell.self,
-            forCellReuseIdentifier: "DaylyForecastTableViewCell"
+            DaylyForecastMainTableViewCell.self,
+            forCellReuseIdentifier: "DaylyForecastMainTableViewCell"
         )
         tblView.register(UITableViewCell.self, forCellReuseIdentifier: "DefaultCell")
         tblView.backgroundColor = .white
@@ -242,7 +242,7 @@ extension MainScreenViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let dates = self.viewModel.forecast.dates.uniqueDatesWithoutCurrent()
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "DaylyForecastTableViewCell", for: indexPath) as? DaylyForecastTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "DaylyForecastMainTableViewCell", for: indexPath) as? DaylyForecastMainTableViewCell else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "DefaultCell", for: indexPath)
             return cell
         }
@@ -250,5 +250,9 @@ extension MainScreenViewController: UITableViewDataSource {
         cell.setup(with: self.viewModel.forecast, date: dates[indexPath.section])
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.viewModel.updateState(viewInput: .daylyWeatherDidSelect)
     }
 }

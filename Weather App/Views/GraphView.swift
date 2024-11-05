@@ -71,6 +71,7 @@ final class GraphView: UIView  {
         
         let temperatures = forecast.list.map { $0.main.temp }
         guard let maxTemperature = temperatures.max() else { return }
+        guard let minTemperature = temperatures.min() else { return }
         
         for x in 0..<self.numberOfPoints {
             let weather = forecast.list[x]
@@ -84,10 +85,10 @@ final class GraphView: UIView  {
         
         if maxTemperature < 0 {
             self.chart.leftAxis.axisMaximum = 0
-        } else {
+        } else if minTemperature > 0 {
             self.chart.leftAxis.axisMaximum = Double(maxTemperature)
             self.chart.leftAxis.axisMinimum = 0
-        }
+        } 
     }
     
     private func setupViews() {

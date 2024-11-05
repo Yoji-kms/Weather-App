@@ -37,8 +37,8 @@ class DailyForecastViewController: UIViewController {
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.register(
-            DaylyForecastTableViewCell.self,
-            forCellReuseIdentifier: "DaylyForecastTableViewCell"
+            DailyForecastTableViewCell.self,
+            forCellReuseIdentifier: "DailyForecastTableViewCell"
         )
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DefaultCell")
         tableView.backgroundColor = .white
@@ -61,14 +61,6 @@ class DailyForecastViewController: UIViewController {
         let barButton = UIBarButtonItem(customView: button)
         
         return barButton
-    }()
-    
-    private lazy var titleView: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .left
-        label.textColor = .systemGray
-        label.text = String(localized: Strings.twentyFourHoursForecast.rawValue)
-        return label
     }()
     
     private lazy var titleBarItem: UIBarButtonItem = {
@@ -155,7 +147,7 @@ extension DailyForecastViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let weather = self.viewModel.forecast.list[indexPath.row]
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "DaylyForecastTableViewCell", for: indexPath) as? DaylyForecastTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "DailyForecastTableViewCell", for: indexPath) as? DailyForecastTableViewCell else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "DefaultCell", for: indexPath)
             return cell
         }

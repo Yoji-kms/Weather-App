@@ -11,7 +11,7 @@ final class MainView: UIView {
     private lazy var sunriseImg: UIImageView = {
         let img = UIImage(resource: .sunrise)
         let imgView = UIImageView(image: img)
-        imgView.tintColor = UIColor(resource: .darkYellow)
+        imgView.tintColor = .darkYellow
         imgView.translatesAutoresizingMaskIntoConstraints = false
         return imgView
     }()
@@ -19,7 +19,7 @@ final class MainView: UIView {
     private lazy var sunsetImg: UIImageView = {
         let img = UIImage(resource: .sunset)
         let imgView = UIImageView(image: img)
-        imgView.tintColor = UIColor(resource: .darkYellow)
+        imgView.tintColor = .darkYellow
         imgView.translatesAutoresizingMaskIntoConstraints = false
         return imgView
     }()
@@ -73,7 +73,7 @@ final class MainView: UIView {
     private lazy var dateTimeLbl: UILabel = {
         let lbl = UILabel()
         lbl.font = .systemFont(ofSize: 16)
-        lbl.textColor = UIColor(resource: .darkYellow)
+        lbl.textColor = .darkYellow
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
@@ -89,7 +89,7 @@ final class MainView: UIView {
 //    MARK: Lifecycle
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = UIColor(resource: .accent)
+        self.backgroundColor = .accent
         self.setupViews()
     }
     

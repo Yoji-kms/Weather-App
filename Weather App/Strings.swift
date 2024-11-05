@@ -46,5 +46,7 @@ enum Strings: String.LocalizationValue {
     case acceptGeo = "Accept geo"
     case denyGeo = "Deny geo"
     case noSuchCity = "There is no such city"
+    case notEnoughData = "Not enough data"
     case currentLocation = "Current location"
+    case rain = "Rain"
 }

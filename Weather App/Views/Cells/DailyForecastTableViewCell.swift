@@ -6,7 +6,7 @@
 //
 import UIKit
 
-final class DaylyForecastTableViewCell: UITableViewCell {
+final class DailyForecastTableViewCell: UITableViewCell {
     let primaryTextColor: UIColor = .black
     let secondaryTextColor: UIColor = .systemGray
     

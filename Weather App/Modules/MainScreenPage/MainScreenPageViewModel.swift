@@ -35,12 +35,14 @@ final class MainScreenPageViewModel: MainScreenPageViewModelProtocol {
         case .locationButtonDidTap(let completion):
             self.coordinator?.presentCreateFolderAlertController() { newCityString in
                 let basicUrl = NetworkService.shared.getUrl(requestType: .geo(newCityString))
-                let key = NetworkService.shared.geoKey ?? ""
                 
-                let url = basicUrl + key
+                let url = basicUrl
                 Task {
-                    guard let geo: GeoResponse = await url.handleAsDecodable() else { return }
-                    let coordinates = geo.coordinates
+                    guard
+                        let geoResponses: [GeoResponse] = await url.handleAsDecodable(),
+                        let geoResponse = geoResponses.first
+                    else { return }
+                    let coordinates = geoResponse.coordinates
                     
                     if !self.data.contains(coordinates) {
                         self.coordinatesServise.saveCoordinates(coordinates) { dbCoordinates in

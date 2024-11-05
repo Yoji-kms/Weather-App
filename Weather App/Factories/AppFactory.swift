@@ -25,10 +25,10 @@ final class AppFactory {
     
     func makeModule(ofType type: Module.ModuleType) -> Module {
         switch type {
-        case .dailyWeatherReport:
-            let viewModel = DailyWeatherReportViewModel()
-            let viewController: UIViewController = DailyWeatherReportViewController(viewModel: viewModel)
-            return Module(type: .dailyWeatherReport, viewModel: viewModel, viewController: viewController)
+        case .dailyWeatherReport(let forecast, let id):
+            let viewModel = DailyWeatherReportViewModel(forecast: forecast)
+            let viewController: UIViewController = DailyWeatherReportViewController(viewModel: viewModel, selectedDateId: id)
+            return Module(type: .dailyWeatherReport(forecast, id), viewModel: viewModel, viewController: viewController)
         case .dailyForecast(let forecast):
             let viewModel = DailyForecastViewModel(forecast: forecast)
             let viewController: UIViewController = DailyForecastViewController(viewModel: viewModel)

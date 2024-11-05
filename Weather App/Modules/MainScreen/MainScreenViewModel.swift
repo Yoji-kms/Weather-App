@@ -51,7 +51,7 @@ final class MainScreenViewModel: MainScreenViewModelProtocol {
     
     enum ViewInput {
         case moreFor24HoursBtnDidTap
-        case daylyWeatherDidSelect
+        case dailyWeatherDidSelect(Int)
     }
     
     enum NetRequest {
@@ -160,8 +160,8 @@ final class MainScreenViewModel: MainScreenViewModelProtocol {
         switch viewInput {
         case .moreFor24HoursBtnDidTap:
             self.coordinator?.pushViewController(ofType: .dailyForecast(self.forecast))
-        case .daylyWeatherDidSelect:
-            self.coordinator?.pushViewController(ofType: .dailyWeatherReport)
+        case .dailyWeatherDidSelect(let selectedDateId):
+            self.coordinator?.pushViewController(ofType: .dailyWeatherReport(self.forecast, selectedDateId))
         }
     }
 }

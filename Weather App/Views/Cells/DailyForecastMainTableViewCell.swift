@@ -1,5 +1,5 @@
 //
-//  DaylyForecastTableViewCell.swift
+//  DailyForecastTableViewCell.swift
 //  Weather App
 //
 //  Created by Yoji on 04.02.2024.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class DaylyForecastMainTableViewCell: UITableViewCell {
+final class DailyForecastMainTableViewCell: UITableViewCell {
     private lazy var dateLbl: UILabel = {
         let lbl = UILabel()
         lbl.font = .systemFont(ofSize: 16)
@@ -108,23 +108,23 @@ extension Forecast {
     }
     
     func getDescriptionByDate(_ date: Date) -> String {
-        let daylyWeathers = self.list.filter { $0.dt.isEqualWithDate(date) }
+        let dailyWeathers = self.list.filter { $0.dt.isEqualWithDate(date) }
         
-        let daylyWeathersContainsMidday = daylyWeathers.contains(where: { $0.dt.isMidday })
-        let weather = daylyWeathersContainsMidday ? daylyWeathers.filter { $0.dt.isMidday }.last : daylyWeathers.last
+        let dailyWeathersContainsMidday = dailyWeathers.contains(where: { $0.dt.isMidday })
+        let weather = dailyWeathersContainsMidday ? dailyWeathers.filter { $0.dt.isMidday }.last : dailyWeathers.last
         return weather?.weatherItem.description.capitalizedSentence ?? ""
     }
     
     func getParameterByDate(_ date: Date, parameter: Parameters) -> NSAttributedString {
-        let daylyWeathers = self.list.filter { $0.dt.isEqualWithDate(date) }
+        let dailyWeathers = self.list.filter { $0.dt.isEqualWithDate(date) }
         
         switch parameter {
         case .humidity:
             var sumHumidity: Int = 0
-            daylyWeathers.compactMap { $0.main.humidity }.forEach { humidity in
+            dailyWeathers.compactMap { $0.main.humidity }.forEach { humidity in
                 sumHumidity += humidity
             }
-            let averageHumidity = sumHumidity / daylyWeathers.count
+            let averageHumidity = sumHumidity / dailyWeathers.count
             
             let humidityImgAtchmnt = NSTextAttachment(image: UIImage(resource: .coloredSmallRain))
             humidityImgAtchmnt.bounds = CGRect(x: 0, y: 0, width: 16, height: 16)
@@ -135,14 +135,14 @@ extension Forecast {
             return humidityTxt
         case .temperature:
             let temperatureTxt = NSMutableAttributedString()
-            if daylyWeathers.count == 1 {
+            if dailyWeathers.count == 1 {
                 temperatureTxt.append(NSAttributedString(
-                    string: "\(daylyWeathers.first?.main.temp ?? 0)º ")
+                    string: "\(dailyWeathers.first?.main.temp ?? 0)º ")
                 )
             } else {
-                var minTemp = daylyWeathers.first?.main.temp ?? 0
+                var minTemp = dailyWeathers.first?.main.temp ?? 0
                 var maxTemp = minTemp
-                daylyWeathers.forEach { weather in
+                dailyWeathers.forEach { weather in
                     let temperature = weather.main.temp
                     minTemp = temperature < minTemp ? temperature : minTemp
                     maxTemp = temperature > maxTemp ? temperature : maxTemp

@@ -331,6 +331,23 @@
         }
       }
     },
+    "Not enough data" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not enough data to display weather 😢\\nTry again after 09:00"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не достаточно данных для отображения погоды 😢\\nПопробуйте после 09:00"
+          }
+        }
+      }
+    },
     "NW" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -395,6 +412,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Разрешить приложению  Weather использовать данные \nо местоположении вашего устройства "
+          }
+        }
+      }
+    },
+    "Rain" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rain"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дождь"
           }
         }
       }

@@ -67,11 +67,11 @@ final class MainScreenViewController: UIViewController {
         return colView
     }()
     
-    private lazy var daylyForecastTableView: UITableView = {
+    private lazy var dailyForecastTableView: UITableView = {
         let tblView = UITableView(frame: .zero, style: .insetGrouped)
         tblView.register(
-            DaylyForecastMainTableViewCell.self,
-            forCellReuseIdentifier: "DaylyForecastMainTableViewCell"
+            DailyForecastMainTableViewCell.self,
+            forCellReuseIdentifier: "DailyForecastMainTableViewCell"
         )
         tblView.register(UITableViewCell.self, forCellReuseIdentifier: "DefaultCell")
         tblView.backgroundColor = .white
@@ -123,7 +123,7 @@ final class MainScreenViewController: UIViewController {
             self.viewModel.updateStateNet(request: .updateForecast { [weak self] in
                 guard let self else { return }
                 self.forecastCollectionView.reloadData()
-                self.daylyForecastTableView.reloadData()
+                self.dailyForecastTableView.reloadData()
             })
         })
     }
@@ -134,7 +134,7 @@ final class MainScreenViewController: UIViewController {
         self.scrollView.addSubview(self.mainView)
         self.scrollView.addSubview(self.moreFor24HoursButton)
         self.scrollView.addSubview(self.forecastCollectionView)
-        self.scrollView.addSubview(self.daylyForecastTableView)
+        self.scrollView.addSubview(self.dailyForecastTableView)
         
         NSLayoutConstraint.activate([
             self.scrollView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
@@ -163,15 +163,15 @@ final class MainScreenViewController: UIViewController {
                 .constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
             self.forecastCollectionView.heightAnchor.constraint(equalToConstant: 100),
             
-            self.daylyForecastTableView.topAnchor
+            self.dailyForecastTableView.topAnchor
                 .constraint(equalTo: self.forecastCollectionView.bottomAnchor, constant: 16),
-            self.daylyForecastTableView.leadingAnchor
+            self.dailyForecastTableView.leadingAnchor
                 .constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
-            self.daylyForecastTableView.trailingAnchor
+            self.dailyForecastTableView.trailingAnchor
                 .constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
-            self.daylyForecastTableView.bottomAnchor
+            self.dailyForecastTableView.bottomAnchor
                 .constraint(equalTo: self.scrollView.bottomAnchor),
-            self.daylyForecastTableView.heightAnchor.constraint(equalToConstant: 350)
+            self.dailyForecastTableView.heightAnchor.constraint(equalToConstant: 350)
         ])
     }
     
@@ -242,7 +242,7 @@ extension MainScreenViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let dates = self.viewModel.forecast.dates.uniqueDatesWithoutCurrent()
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "DaylyForecastMainTableViewCell", for: indexPath) as? DaylyForecastMainTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "DailyForecastMainTableViewCell", for: indexPath) as? DailyForecastMainTableViewCell else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "DefaultCell", for: indexPath)
             return cell
         }
@@ -253,6 +253,7 @@ extension MainScreenViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.viewModel.updateState(viewInput: .daylyWeatherDidSelect)
+        let selectedDateId = indexPath.section
+        self.viewModel.updateState(viewInput: .dailyWeatherDidSelect(selectedDateId))
     }
 }

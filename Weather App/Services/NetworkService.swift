@@ -12,17 +12,11 @@ final class NetworkService {
     
     enum Label: String {
         case weather = "weather"
-        case geo = "geo"
     }
     
     lazy var weatherKey: String? = {
         guard let key = self.getKeyFromKeychain(label: .weather) else { return nil }
         return "&appid=\(self.decode(array: key) ?? "")"
-    }()
-    
-    lazy var geoKey: String? = {
-        guard let key = self.getKeyFromKeychain(label: .geo) else { return nil }
-        return "&apikey=\(self.decode(array: key) ?? "")"
     }()
     
     enum Request {
@@ -38,7 +32,7 @@ final class NetworkService {
         case .currentWeather(let coordinates):
             return "https://api.openweathermap.org/data/2.5/weather?lat=\(coordinates.lat)&lon=\(coordinates.lon)&units=metric"
         case .geo(let city):
-            return "https://geocode-maps.yandex.ru/1.x/?geocode=\(city)&format=json&results=1"
+            return "https://nominatim.openstreetmap.org/search?q=\(city)&format=json\(city)&format=json&limit=1"
         }
     }
     
@@ -81,8 +75,6 @@ final class NetworkService {
             switch label {
             case .weather:
                 key = [51, 98, 49, 101, 51, 55, 50, 52, 57, 100, 48, 99, 52, 52, 97, 53, 51, 53, 55, 54, 54, 97, 54, 50, 48, 99, 101, 54, 102, 101, 57, 102]
-            case .geo:
-                key = [100, 54, 98, 56, 100, 57, 52, 51, 45, 49, 99, 57, 48, 45, 52, 100, 52, 51, 45, 56, 55, 48, 55, 45, 51, 55, 51, 56, 48, 49, 56, 52, 100, 102, 52, 102]
             }
             return self.addKeyToKeychain(key: key, label: label.rawValue)
         }

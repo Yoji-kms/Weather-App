@@ -98,7 +98,12 @@ final class MainScreenViewModel: MainScreenViewModelProtocol {
             let weatherDate = weather.dt
             if currentDate > weatherDate + 15.minutes {
                 let weatherResponse: WeatherResponse? = await urlWeather.handleAsDecodable()
-                guard let weatherResponse else { return }
+                guard let weatherResponse else {
+                    DispatchQueue.main.async {
+                        completion()
+                    }
+                    return
+                }
 
                 self.weatherService.saveWeather(
                     coordinates: self.coordinates, response: weatherResponse
@@ -108,7 +113,12 @@ final class MainScreenViewModel: MainScreenViewModelProtocol {
                         let newWeather = weathers.filter({
                             $0.coordWeather?.toCoordinates() == self.coordinates
                         }).first?.toWeather()
-                    else { return }
+                    else {
+                        DispatchQueue.main.async {
+                            completion()
+                        }
+                        return
+                    }
                     
                     self.weather = newWeather
                     DispatchQueue.main.async {
@@ -135,12 +145,22 @@ final class MainScreenViewModel: MainScreenViewModelProtocol {
             
             if currentDate > forecastFirstDate || forecastCityName != self.weather.name {
                 let forecastResponse: ForecastResponse? = await urlForecast.handleAsDecodable()
-                guard let forecastResponse else { return }
+                guard let forecastResponse else {
+                    DispatchQueue.main.async {
+                        completion()
+                    }
+                    return
+                }
                 
                 self.forecastService.saveForecast(
                     coordinates: self.coordinates, response: forecastResponse
                 ) { [weak self] forecasts in
-                    guard let self else { return }
+                    guard let self else {
+                        DispatchQueue.main.async {
+                            completion()
+                        }
+                        return
+                    }
                     self.forecastService.getForecastBy(coordinates: self.coordinates) { dbForecast in
                         self.forecast = dbForecast?.toForecast() ?? Forecast()
                         DispatchQueue.main.async {

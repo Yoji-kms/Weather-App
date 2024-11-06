@@ -35,9 +35,8 @@ final class MainScreenPageViewModel: MainScreenPageViewModelProtocol {
             self.initCity(completion: completion)
         case .locationButtonDidTap(let completion):
             self.coordinator?.presentCreateFolderAlertController() { newCityString in
-                let basicUrl = NetworkService.shared.getUrl(requestType: .geo(newCityString))
+                let url = NetworkService.shared.getUrl(requestType: .geo(newCityString))
                 
-                let url = basicUrl
                 Task {
                     guard
                         let geoResponses: [GeoResponse] = await url.handleAsDecodable(),

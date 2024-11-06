@@ -12,10 +12,6 @@ extension Date {
         self.stringWithTimezone == "12:00"
     }
     
-    var isMidnight: Bool {
-        self.stringWithTimezone == "00:00"
-    }
-    
     private var stringWithTimezone: String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH:mm"

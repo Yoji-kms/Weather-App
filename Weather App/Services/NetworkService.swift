@@ -32,7 +32,7 @@ final class NetworkService {
         case .currentWeather(let coordinates):
             return "https://api.openweathermap.org/data/2.5/weather?lat=\(coordinates.lat)&lon=\(coordinates.lon)&units=metric"
         case .geo(let city):
-            return "https://nominatim.openstreetmap.org/search?q=\(city)&format=json\(city)&format=json&limit=1"
+            return "https://nominatim.openstreetmap.org/search?q=\(city)&format=json&limit=1"
         }
     }
     

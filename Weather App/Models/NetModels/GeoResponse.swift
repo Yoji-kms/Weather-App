@@ -8,52 +8,19 @@
 import Foundation
 
 struct GeoResponse: Decodable {
-    let lat: Float
-    let lon: Float
+    let lat: String
+    let lon: String
 }
 
 extension GeoResponse {
     var coordinates: Coordinates {
-        return Coordinates(lat: self.lat, lon: self.lon)
+        return Coordinates(lat: self.lat.float, lon: self.lon.float)
     }
 }
 
-//struct Response: Decodable {
-//    let 0: GeoObjectCollection
-//    
-//    enum CodingKeys: String, CodingKey {
-//        case geoObjectCollection = "GeoObjectCollection"
-//    }
-//}
-//
-//struct GeoObjectCollection: Decodable {
-//    let featureMember: [FeatureMember]
-//}
-//
-//struct FeatureMember: Decodable {
-//    let geoObject: GeoObject
-//    
-//    enum CodingKeys: String, CodingKey {
-//        case geoObject = "GeoObject"
-//    }
-//}
-//
-//struct GeoObject: Decodable {
-//    let point: Point
-//    
-//    enum CodingKeys: String, CodingKey {
-//        case point = "Point"
-//    }
-//}
-//
-//struct Point: Decodable {
-//    let pos: String
-//}
-//
-//extension GeoResponse {
-//    var coordinates: Coordinates {
-//        let coordinatesString = self.response.geoObjectCollection.featureMember.first?.geoObject.point.pos ?? "0 0"
-//        let coordinatesSplit = coordinatesString.split(separator: " ").map { Float($0) ?? 0 }
-//        return Coordinates(lat: coordinatesSplit[1], lon: coordinatesSplit[0])
-//    }
-//}
+private extension String {
+    var float: Float {
+        guard let result = Float(self) else { return 0 }
+        return result
+    }
+}

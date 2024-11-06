@@ -62,6 +62,7 @@ final class MainScreenPageCoordinator: ModuleCoordinatable {
             childCoordinator = OnboardingCoordinator(moduleType: type, factory: self.factory)
         case .settings:
             childCoordinator = SettingsCoordinator(moduleType: type, factory: self.factory)
+            (childCoordinator as? SettingsCoordinator)?.delegate = self
         default:
             return
         }
@@ -69,8 +70,13 @@ final class MainScreenPageCoordinator: ModuleCoordinatable {
         self.addChildCoordinator(childCoordinator)
         
         let viewControllerToPush = childCoordinator.start()
-        guard let navController = module?.viewController as? UINavigationController else { return }
-        navController.pushViewController(viewControllerToPush, animated: true)
+        
+        if let navController = module?.viewController as? UINavigationController {
+            navController.pushViewController(viewControllerToPush, animated: true)
+        } else {
+            guard let navController = module?.viewController.navigationController else { return }
+            navController.pushViewController(viewControllerToPush, animated: true)
+        }
     }
     
     func presentCreateFolderAlertController(completion: @escaping (String) -> Void) {
@@ -103,5 +109,11 @@ final class MainScreenPageCoordinator: ModuleCoordinatable {
         alert.addAction(createAction)
         
         self.module?.viewController.present(alert, animated: true)
+    }
+}
+
+extension MainScreenPageCoordinator: RemoveChildCoordinatorDelegate {
+    func remove(childCoordinator: any Coordinatable) {
+        self.removeChildCoordinator(childCoordinator)
     }
 }

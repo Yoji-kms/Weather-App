@@ -19,6 +19,7 @@ final class MainScreenPageViewModel: MainScreenPageViewModelProtocol {
         case cityChanged(()->Void)
         case initCity(([UIViewController])->Void)
         case locationButtonDidTap((MainScreenViewController)->Void)
+        case settingsButtonDidTap
     }
     
     init(coordinatesServise: CoordinatesService, locationService: LocationService) {
@@ -55,6 +56,8 @@ final class MainScreenPageViewModel: MainScreenPageViewModelProtocol {
                     }
                 }
             }
+        case .settingsButtonDidTap:
+            self.coordinator?.pushViewController(ofType: .settings)
         }
     }
     

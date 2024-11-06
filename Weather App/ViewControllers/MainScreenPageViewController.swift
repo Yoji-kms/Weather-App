@@ -63,8 +63,12 @@ final class MainScreenPageViewController: UIViewController {
         self.setupViews()
     }
     
-    private func setupNavigation() {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         self.navigationController?.navigationBar.isHidden = false
+    }
+    
+    private func setupNavigation() {
         self.navigationController?.navigationBar.tintColor = .black
         self.navigationItem.style = .navigator
         self.navigationItem.leftBarButtonItem = self.settingsBarBtn
@@ -117,7 +121,7 @@ final class MainScreenPageViewController: UIViewController {
     
     //    MARK: Actions
     @objc private func settingsBtnBarAcion() {
-        print("👹")
+        self.viewModel.updateState(input: .settingsButtonDidTap)
     }
     
     @objc private func locationBtnBarAcion() {

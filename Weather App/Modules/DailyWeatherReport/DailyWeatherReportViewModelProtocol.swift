@@ -11,4 +11,5 @@ protocol DailyWeatherReportViewModelProtocol: ViewModelProtocol {
     var dates: [Date] { get }
     var city: String { get }
     func updateWeatherBy(dateId: Int, completion: @escaping (DailyWeather?)->Void)
+    func popViewController()
 }

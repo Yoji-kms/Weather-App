@@ -242,24 +242,24 @@ private extension Weather {
     
     var timeText: String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "HH:mm"
+        dateFormatter.dateFormat = "HH:mm".timeFormat
         let txt = dateFormatter.string(from: self.dt)
         return txt
     }
     
     var temperatureText: String {
-        return "\(self.main.temp)º"
+        return "\(self.main.temp.temperature)º"
     }
     
     var feelsLikeText: String {
         let feelsLikeString = String(localized: Strings.feelsLike.rawValue)
-        return "\(feelsLikeString) \(self.main.feelsLike)º"
+        return "\(feelsLikeString) \(self.main.feelsLike.temperature)º"
     }
     
     var windText: String {
-        let metersPerSecond = String(localized: Strings.ms.rawValue)
+        let metersPerSecond = String(localized: Strings.ms.rawValue).windSpeed
         let direction = self.wind.windDirection
-        let speed = self.wind.speed
+        let speed = self.wind.speed.windSpeed
         return "\(speed) \(metersPerSecond) \(direction)"
     }
     

@@ -9,4 +9,8 @@ import Foundation
 
 enum UserDefaultKeys: String {
     case isLocationRequested = "isLocationRequested"
+    case temperature = "temperature"
+    case windSpeed = "wind speed"
+    case timeFormat = "time format"
+    case isNotificationsOff = "isNotificationsOff"
 }

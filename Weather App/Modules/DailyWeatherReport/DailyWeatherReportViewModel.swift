@@ -66,6 +66,10 @@ final class DailyWeatherReportViewModel: DailyWeatherReportViewModelProtocol {
         let dailyWeather = dateId < self.dailyWeathers.count ? self.dailyWeathers[dateId] : nil
         completion(dailyWeather)
     }
+    
+    func popViewController() {
+        self.coordinator?.popViewController()
+    }
 }
 
 private extension [Weather] {

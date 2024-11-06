@@ -125,12 +125,13 @@ class DailyForecastViewController: UIViewController {
     }
     
     private func setupNavigation() {
+        self.navigationController?.navigationBar.isHidden = false
         self.navigationController?.navigationBar.tintColor = .systemGray
         self.navigationItem.leftBarButtonItems = [self.backBarButton, self.titleBarItem]
     }
     
     @objc private func backButtonDidTap() {
-        self.navigationController?.popViewController(animated: true)
+        self.viewModel.popViewController()
     }
 }
 
@@ -152,6 +153,7 @@ extension DailyForecastViewController: UITableViewDataSource {
             return cell
         }
         cell.clipsToBounds = true
+        cell.isUserInteractionEnabled = false
         cell.setup(with: weather)
         
         return cell

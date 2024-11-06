@@ -25,6 +25,7 @@ enum Strings: String.LocalizationValue {
     case ssw = "SSW"
     case nne = "NNE"
     case ms = "m/s"
+    case mph = "mph"
     case humidity = "Humidity"
     case sun = "Sun"
     case feelsLike = "Feels like"
@@ -49,4 +50,11 @@ enum Strings: String.LocalizationValue {
     case notEnoughData = "Not enough data"
     case currentLocation = "Current location"
     case rain = "Rain"
+    
+    case settings = "Settings"
+    case temperature = "Temperature"
+    case windSpeed = "Wind speed"
+    case timeFormat = "Time format"
+    case notifications = "Notifications"
+    case accept = "Accept"
 }

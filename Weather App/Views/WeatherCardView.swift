@@ -77,7 +77,7 @@ final class WeatherCardView: UIView {
         
         self.iconImageView.image = weather.weatherItem.icon
         self.descriptionLabel.text = weather.weatherItem.description.capitalizedSentence
-        self.temperatureLabel.text = "\(weather.main.temp)º"
+        self.temperatureLabel.text = "\(weather.main.temp.temperature)º"
 
         let dayString = String(localized: Strings.day.rawValue)
         let nightString = String(localized: Strings.night.rawValue)
@@ -156,12 +156,12 @@ extension WeatherCardView: UITableViewDataSource {
         }
         
         let wind = self.weather.wind
-        let metersPerSecond = String(localized: Strings.ms.rawValue)
-        let windString = "\(wind.speed) \(metersPerSecond) \(wind.windDirection)"
+        let metersPerSecond = String(localized: Strings.ms.rawValue).windSpeed
+        let windString = "\(wind.speed.windSpeed) \(metersPerSecond) \(wind.windDirection)"
         
         let parameterValue: String = switch indexPath.row {
         case 0:
-            "\(self.weather.main.feelsLike)º"
+            "\(self.weather.main.feelsLike.temperature)º"
         case 1:
             windString
         case 2:

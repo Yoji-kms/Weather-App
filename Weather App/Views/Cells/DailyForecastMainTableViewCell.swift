@@ -147,7 +147,7 @@ extension Forecast {
                     minTemp = temperature < minTemp ? temperature : minTemp
                     maxTemp = temperature > maxTemp ? temperature : maxTemp
                 }
-                temperatureTxt.append(NSAttributedString(string: "\(minTemp)º..\(maxTemp)º "))
+                temperatureTxt.append(NSAttributedString(string: "\(minTemp.temperature)º..\(maxTemp.temperature)º "))
             }
             let arrowAttachment = NSTextAttachment(
                 image: UIImage(systemName: "chevron.right") ?? UIImage()

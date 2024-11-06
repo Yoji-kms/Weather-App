@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F90042A42CDB74640002A46F /* CustomSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90042A32CDB74640002A46F /* CustomSwitch.swift */; };
+		F90042A62CDB90AC0002A46F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90042A52CDB90AC0002A46F /* SettingsView.swift */; };
+		F90042A82CDBC37E0002A46F /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90042A72CDBC3790002A46F /* Settings.swift */; };
 		F9092C392AE6690B003A7B79 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9092C382AE6690A003A7B79 /* AppDelegate.swift */; };
 		F9092C3B2AE6690B003A7B79 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9092C3A2AE6690B003A7B79 /* SceneDelegate.swift */; };
 		F9092C432AE6690B003A7B79 /* WeatherApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F9092C412AE6690B003A7B79 /* WeatherApp.xcdatamodeld */; };
@@ -127,6 +130,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F90042A32CDB74640002A46F /* CustomSwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSwitch.swift; sourceTree = "<group>"; };
+		F90042A52CDB90AC0002A46F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		F90042A72CDBC3790002A46F /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		F9092C352AE6690A003A7B79 /* Weather App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Weather App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9092C382AE6690A003A7B79 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F9092C3A2AE6690B003A7B79 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -420,6 +426,7 @@
 		F9092CA82AE7B462003A7B79 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				F90042A72CDBC3790002A46F /* Settings.swift */,
 				F951F7BD2B6C223C00CA45D9 /* NetModels */,
 				F9092C412AE6690B003A7B79 /* WeatherApp.xcdatamodeld */,
 				F951F7BE2B6C22E500CA45D9 /* Sys.swift */,
@@ -468,6 +475,8 @@
 				F937DE122CCB9A57004789C9 /* TimelineView.swift */,
 				F937DE142CCBBFBD004789C9 /* TimelineAxisView.swift */,
 				F9F268DE2CD12E8E00CC1B4A /* WeatherCardView.swift */,
+				F90042A32CDB74640002A46F /* CustomSwitch.swift */,
+				F90042A52CDB90AC0002A46F /* SettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -646,12 +655,14 @@
 				F9092C9B2AE68E54003A7B79 /* OnboardingViewController.swift in Sources */,
 				F995123B2BBD848600F03BEB /* AddLocationViewController.swift in Sources */,
 				F951F7C92B6C238F00CA45D9 /* Coordinates.swift in Sources */,
+				F90042A82CDBC37E0002A46F /* Settings.swift in Sources */,
 				F9092C9D2AE68E61003A7B79 /* MainScreenViewController.swift in Sources */,
 				F9092C432AE6690B003A7B79 /* WeatherApp.xcdatamodeld in Sources */,
 				F951F7C72B6C237200CA45D9 /* WeatherItem.swift in Sources */,
 				F951F7C52B6C235400CA45D9 /* MainData.swift in Sources */,
 				F99512372BBD5EA600F03BEB /* GeoResponse.swift in Sources */,
 				F951F7C12B6C231700CA45D9 /* Wind.swift in Sources */,
+				F90042A42CDB74640002A46F /* CustomSwitch.swift in Sources */,
 				F9092CB02AE972FE003A7B79 /* CoordinatesResponse.swift in Sources */,
 				F9092CA32AE6BB93003A7B79 /* Coordinatable.swift in Sources */,
 				F9092C9F2AE68E78003A7B79 /* DailyForecastViewController.swift in Sources */,
@@ -663,6 +674,7 @@
 				F9092C782AE688D7003A7B79 /* OnboardingCoordinator.swift in Sources */,
 				F9167A3B2B21FE280032E345 /* MainView.swift in Sources */,
 				F9092C7A2AE68973003A7B79 /* MainScreenCoordinator.swift in Sources */,
+				F90042A62CDB90AC0002A46F /* SettingsView.swift in Sources */,
 				F95861032B7E10BC001E7F3F /* WeatherServiceProtocol.swift in Sources */,
 				F9092C952AE68E25003A7B79 /* DailyWeatherReportViewModelProtocol.swift in Sources */,
 				F95860FD2B7CDBF1001E7F3F /* CoordinatesService.swift in Sources */,

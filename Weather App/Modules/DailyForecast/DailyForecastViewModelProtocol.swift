@@ -9,4 +9,5 @@ import Foundation
 
 protocol DailyForecastViewModelProtocol: ViewModelProtocol {
     var forecast: Forecast { get }
+    func popViewController()
 }

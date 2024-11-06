@@ -9,7 +9,6 @@ import UIKit
 import CoreLocation
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
     var window: UIWindow?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -29,6 +28,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private func getRootViewController(locationService: LocationService, factory: AppFactory) -> UIViewController {
         if locationService.isNotDeterminedAuthorization &&
             !UserDefaults.standard.bool(forKey: UserDefaultKeys.isLocationRequested.rawValue) {
+            Settings.shared.update(
+                temperatureBool: Temperature.c.bool,
+                windSpeedBool: WindSpeed.km.bool,
+                timeFormatBool: TimeFormat._24.bool,
+                notificationsBool: true
+            )
+            
             let appCoordinator = OnboardingCoordinator(moduleType: .onboarding, factory: factory)
             return appCoordinator.start()
         } else {

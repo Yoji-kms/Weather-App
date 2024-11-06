@@ -69,13 +69,13 @@ final class GraphView: UIView  {
     func setup(with forecast: Forecast) {
         self.timeline.setup(with: forecast)
         
-        let temperatures = forecast.list.map { $0.main.temp }
+        let temperatures = forecast.list.map { $0.main.temp.temperature }
         guard let maxTemperature = temperatures.max() else { return }
         guard let minTemperature = temperatures.min() else { return }
         
         for x in 0..<self.numberOfPoints {
             let weather = forecast.list[x]
-            let temperature = Double(weather.main.temp)
+            let temperature = Double(weather.main.temp.temperature)
             let chartDataEntry = ChartDataEntry(x: Double(x), y: temperature)
             
             self.chartData.append(chartDataEntry)

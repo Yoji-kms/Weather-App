@@ -100,8 +100,8 @@ final class MainView: UIView {
     
 //    MARK: Setups
     func setup(with weather: Weather) {
-        let minMaxTemperatureTxt = "\(weather.main.tempMin)º/\(weather.main.tempMax)º"
-        let currentTemperatureTxt = "\(weather.main.temp)º"
+        let minMaxTemperatureTxt = "\(weather.main.tempMin.temperature)º/\(weather.main.tempMax.temperature)º"
+        let currentTemperatureTxt = "\(weather.main.temp.temperature)º"
         let descriptionTxt = weather.weatherItem.description.capitalizedSentence
         let parametersTxt = self.getParametersText(weather: weather)
         let sunriseTxt = self.getSunsetSunriseTextFormatted(date: weather.sys?.sunrise)
@@ -180,7 +180,7 @@ final class MainView: UIView {
         let cloudsImgAtchmnt = NSTextAttachment(image: UIImage(resource: .coloredCloudsSun))
         cloudsImgAtchmnt.bounds = CGRect(x: 0, y: 0, width: 21, height: 18)
         
-        let metersForSecond = String(localized: Strings.ms.rawValue)
+        let metersPerSecond = String(localized: Strings.ms.rawValue).windSpeed
         let parametersTxt = NSMutableAttributedString()
         parametersTxt.append(NSAttributedString(attachment: cloudsImgAtchmnt))
         parametersTxt.append(NSAttributedString(
@@ -189,7 +189,7 @@ final class MainView: UIView {
         
         parametersTxt.append(NSAttributedString(attachment: windImgAtchmnt))
         parametersTxt.append(NSAttributedString(
-            string: " \(weather.wind.speed) \(metersForSecond)   ")
+            string: " \(weather.wind.speed.windSpeed) \(metersPerSecond)   ")
         )
         
         parametersTxt.append(NSAttributedString(attachment: humidityImgAtchmnt))
@@ -200,7 +200,7 @@ final class MainView: UIView {
     
     private func getSunsetSunriseTextFormatted(date: Date?) -> String {
         let sunsetSunriseFormatter = DateFormatter()
-        sunsetSunriseFormatter.dateFormat = "HH:mm"
+        sunsetSunriseFormatter.dateFormat = "HH:mm".timeFormat
         let txt = sunsetSunriseFormatter.string(from: date ?? Date())
         return txt
     }
@@ -209,9 +209,9 @@ final class MainView: UIView {
         let currentDateFormatter = DateFormatter()
         currentDateFormatter.locale = Locale.current
         
-        currentDateFormatter.dateFormat = "HH:mm, EE dd MMMM"
+        currentDateFormatter.dateFormat = "HH:mm, EE dd MMMM".timeFormat
         let currentDate = Date()
-        let txt = currentDateFormatter.string(from: currentDate)
+        let txt = currentDateFormatter.string(from: currentDate).lowercased()
         return txt
     }
 }

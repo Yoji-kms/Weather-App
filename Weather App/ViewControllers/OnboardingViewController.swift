@@ -19,7 +19,7 @@ class OnboardingViewController: UIViewController {
     
     private lazy var acceptButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = UIColor(resource: .onboardingButton)
+        button.backgroundColor = .onboardingButton
         let text = String(localized: Strings.acceptGeo.rawValue)
         button.setTitle(text, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 12)

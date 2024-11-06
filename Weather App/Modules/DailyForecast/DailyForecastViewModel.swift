@@ -15,4 +15,8 @@ final class DailyForecastViewModel: DailyForecastViewModelProtocol {
     init(forecast: Forecast) {
         self.forecast = forecast
     }
+    
+    func popViewController() {
+        self.coordinator?.popViewController()
+    }
 }

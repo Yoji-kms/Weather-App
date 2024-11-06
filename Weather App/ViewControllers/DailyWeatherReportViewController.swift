@@ -87,6 +87,8 @@ class DailyWeatherReportViewController: UIViewController {
         label.textColor = .black
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 24)
+        label.numberOfLines = 0
+        label.isHidden = true
         
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -125,18 +127,25 @@ class DailyWeatherReportViewController: UIViewController {
         self.setupNavigation()
         let indexPath = IndexPath(row: self.selectedDateId, section: 0)
         self.datesCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
+        self.updateWeatherCards(dateId: self.selectedDateId)
     }
     
     private func setupViews() {
         self.view.addSubview(self.cityLabel)
         self.view.addSubview(self.datesCollectionView)
+        self.view.addSubview(self.notEnoughDataLabel)
         self.view.addSubview(self.scrollView)
         self.scrollView.addSubview(self.dayWeatherCardView)
         self.scrollView.addSubview(self.nightWeatherCardView)
+        self.view.sendSubviewToBack(self.notEnoughDataLabel)
         
         NSLayoutConstraint.activate([
             self.cityLabel.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 8),
             self.cityLabel.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            
+            self.notEnoughDataLabel.topAnchor.constraint(equalTo: self.datesCollectionView.bottomAnchor, constant: 40),
+            self.notEnoughDataLabel.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            self.notEnoughDataLabel.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             
             self.datesCollectionView.topAnchor.constraint(equalTo: self.cityLabel.bottomAnchor, constant: 32),
             self.datesCollectionView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
@@ -162,12 +171,13 @@ class DailyWeatherReportViewController: UIViewController {
     }
     
     private func setupNavigation() {
+        self.navigationController?.navigationBar.isHidden = false
         self.navigationController?.navigationBar.tintColor = .systemGray
         self.navigationItem.leftBarButtonItems = [self.backBarButton, self.titleBarItem]
     }
     
     @objc private func backButtonDidTap() {
-        self.navigationController?.popViewController(animated: true)
+        self.viewModel.popViewController()
     }
     
     private func updateWeatherCards(dateId: Int) {
@@ -175,6 +185,7 @@ class DailyWeatherReportViewController: UIViewController {
             guard let dailyWeather else {
                 self.dayWeatherCardView.visibility(gone: true)
                 self.nightWeatherCardView.visibility(gone: true)
+                self.notEnoughDataLabel.isHidden = false
                 return
             }
             
@@ -188,6 +199,7 @@ class DailyWeatherReportViewController: UIViewController {
             
             self.nightWeatherCardView.visibility(gone: false, dimension: 308)
             self.nightWeatherCardView.setup(with: nightWeather)
+            self.notEnoughDataLabel.isHidden = true
         }
     }
 }
@@ -218,7 +230,6 @@ extension DailyWeatherReportViewController: UICollectionViewDataSource {
         }
         cell.setup(with: self.viewModel.dates[indexPath.row])
         if cell.isSelected {
-            self.collectionView(self.datesCollectionView, didSelectItemAt: indexPath)
             cell.changeColors(isSelected: true)
         }
         

@@ -70,7 +70,7 @@ final class TimelineView: UIView {
         for i in 0..<self.numberOfPoints {
             let weather = forecast.list[i]
             let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "HH:mm"
+            dateFormatter.dateFormat = "HH:mm".timeFormat
             let text = dateFormatter.string(from: weather.dt)
             
             self.timelineLabels[i].text = text

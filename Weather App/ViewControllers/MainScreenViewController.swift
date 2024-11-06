@@ -22,6 +22,20 @@ final class MainScreenViewController: UIViewController {
         return scrl
     }()
     
+    private lazy var dailyForecastLabel: UILabel = {
+        let label = UILabel()
+        let text = String(localized: Strings.dailyForecast.rawValue)
+        
+        label.text = text
+        label.textColor = .black
+        label.font = .systemFont(ofSize: 18, weight: .bold)
+        label.backgroundColor = .clear
+        label.textAlignment = .left
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        return label
+    }()
+    
     private lazy var mainView: MainView = {
         let view = MainView()
         view.setup(with: self.viewModel.weather)
@@ -111,6 +125,10 @@ final class MainScreenViewController: UIViewController {
         self.view.backgroundColor = .white
 
         self.setupViews()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         self.updateAll()
     }
     
@@ -134,6 +152,7 @@ final class MainScreenViewController: UIViewController {
         self.scrollView.addSubview(self.mainView)
         self.scrollView.addSubview(self.moreFor24HoursButton)
         self.scrollView.addSubview(self.forecastCollectionView)
+        self.scrollView.addSubview(self.dailyForecastLabel)
         self.scrollView.addSubview(self.dailyForecastTableView)
         
         NSLayoutConstraint.activate([
@@ -163,8 +182,13 @@ final class MainScreenViewController: UIViewController {
                 .constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
             self.forecastCollectionView.heightAnchor.constraint(equalToConstant: 100),
             
+            self.dailyForecastLabel.topAnchor.constraint(equalTo: self.forecastCollectionView.bottomAnchor, constant: 24),
+            self.dailyForecastLabel.leadingAnchor.constraint(
+                equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 16
+            ),
+            
             self.dailyForecastTableView.topAnchor
-                .constraint(equalTo: self.forecastCollectionView.bottomAnchor, constant: 16),
+                .constraint(equalTo: self.dailyForecastLabel.bottomAnchor, constant: 8),
             self.dailyForecastTableView.leadingAnchor
                 .constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
             self.dailyForecastTableView.trailingAnchor

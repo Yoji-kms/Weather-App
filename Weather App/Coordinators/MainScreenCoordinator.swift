@@ -45,8 +45,10 @@ final class MainScreenCoordinator: ModuleCoordinatable {
         switch type {
         case .dailyWeatherReport:
             childCoordinator = DailyWeatherReportCoordinator(moduleType: type, factory: self.factory)
+            (childCoordinator as? DailyWeatherReportCoordinator)?.delegate = self
         case .dailyForecast:
             childCoordinator = DailyForecastCoordinator(moduleType: type, factory: self.factory)
+            (childCoordinator as? DailyForecastCoordinator)?.delegate = self
         default:
             return
         }
@@ -56,5 +58,11 @@ final class MainScreenCoordinator: ModuleCoordinatable {
         let viewControllerToPush = childCoordinator.start()
         let navController = module?.viewController.navigationController
         navController?.pushViewController(viewControllerToPush, animated: true)
+    }
+}
+
+extension MainScreenCoordinator: RemoveChildCoordinatorDelegate {
+    func remove(childCoordinator: any Coordinatable) {
+        self.removeChildCoordinator(childCoordinator)
     }
 }

@@ -8,5 +8,10 @@
 import Foundation
 
 protocol SettingsViewModelProtocol: ViewModelProtocol {
-    
+    func updateSettings(
+        temperatureBool: Bool,
+        windSpeedBool: Bool,
+        timeFormatBool: Bool,
+        notificationsBool: Bool
+    )
 }

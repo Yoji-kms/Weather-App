@@ -56,11 +56,11 @@ final class ForecastCollectionViewCell: UICollectionViewCell {
     
     func setup(with weather: Weather) {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "HH:mm"
+        dateFormatter.dateFormat = "HH:mm".timeFormat
         let timeLblTxt = dateFormatter.string(from: weather.dt)
         timeLbl.text = timeLblTxt
         
-        self.temperatureLbl.text = "\(weather.main.temp)º"
+        self.temperatureLbl.text = "\(weather.main.temp.temperature)º"
         self.imageView.image = weather.weatherItem.icon
     }
     

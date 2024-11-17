@@ -75,7 +75,6 @@ final class MainScreenPageViewController: UIViewController {
     }
     
     private func setupNavigation() {
-        self.navigationController?.navigationBar.isHidden = false
         self.navigationController?.navigationBar.tintColor = .black
         self.navigationItem.style = .navigator
         self.navigationItem.leftBarButtonItem = self.settingsBarBtn

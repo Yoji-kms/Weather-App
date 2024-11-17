@@ -12,13 +12,19 @@ final class MainScreenPageViewController: UIViewController {
     private let viewModel: MainScreenPageViewModelProtocol
     private var mainScreenViewControllers: [UIViewController] = []
     
+    private lazy var pageControl: UIPageControl = {
+        let pageControl = UIPageControl()
+        pageControl.hidesForSinglePage = true
+        pageControl.pageIndicatorTintColor = .black
+        let circle = UIImage(systemName: "circle")
+        pageControl.preferredCurrentPageIndicatorImage = circle
+        pageControl.currentPageIndicatorTintColor = .black
+        pageControl.translatesAutoresizingMaskIntoConstraints = false
+        return pageControl
+    }()
+    
     private lazy var pageViewController: UIPageViewController = {
         let pageVC = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
-        var appearance = UIPageControl.appearance(whenContainedInInstancesOf: [UIPageViewController.self])
-        appearance.pageIndicatorTintColor = .black
-        let circle = UIImage(systemName: "circle")
-        appearance.preferredCurrentPageIndicatorImage = circle
-        appearance.currentPageIndicatorTintColor = .black
         pageVC.dataSource = self
         pageVC.delegate = self
         pageVC.view.backgroundColor = .clear
@@ -69,6 +75,7 @@ final class MainScreenPageViewController: UIViewController {
     }
     
     private func setupNavigation() {
+        self.navigationController?.navigationBar.isHidden = false
         self.navigationController?.navigationBar.tintColor = .black
         self.navigationItem.style = .navigator
         self.navigationItem.leftBarButtonItem = self.settingsBarBtn
@@ -78,6 +85,7 @@ final class MainScreenPageViewController: UIViewController {
     private func setupViews() {
         self.addChild(self.pageViewController)
         self.view.addSubview(self.pageViewController.view)
+        self.view.addSubview(self.pageControl)
         
         self.viewModel.updateState(input: .initCity { [weak self] initialViewControllers in
             guard let self else { return }
@@ -98,8 +106,11 @@ final class MainScreenPageViewController: UIViewController {
         guard let settingsBarButton = self.settingsBarBtn.customView else { return }
         
         NSLayoutConstraint.activate([
+            self.pageControl.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+            self.pageControl.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor),
+            
             self.pageViewController.view.topAnchor.constraint(
-                equalTo: self.view.safeAreaLayoutGuide.topAnchor
+                equalTo: self.pageControl.bottomAnchor
             ),
             self.pageViewController.view.leadingAnchor.constraint(
                 equalTo: self.view.safeAreaLayoutGuide.leadingAnchor
@@ -164,23 +175,27 @@ extension MainScreenPageViewController : UIPageViewControllerDataSource {
 
 extension MainScreenPageViewController : UIPageViewControllerDelegate {
     func presentationCount(for pageViewController: UIPageViewController) -> Int {
+        self.pageControl.numberOfPages = self.mainScreenViewControllers.count
         return self.mainScreenViewControllers.count
     }
     
     func presentationIndex(for pageViewController: UIPageViewController) -> Int {
         guard 
             let currentViewController = pageViewController.viewControllers?.first as? MainScreenViewController,
-            let currentIndex = mainScreenViewControllers.firstIndex(of: currentViewController)
+            let currentIndex = self.mainScreenViewControllers.firstIndex(of: currentViewController)
         else { return 0 }
+        self.pageControl.currentPage = currentIndex
         
         return currentIndex
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         guard
-            let currentViewController = pageViewController.viewControllers?.first as? MainScreenViewController
+            let currentViewController = pageViewController.viewControllers?.first as? MainScreenViewController,
+            let currentIndex = self.mainScreenViewControllers.firstIndex(of: currentViewController)
         else { return }
         
+        self.pageControl.currentPage = currentIndex
         currentViewController.delegate = self
         currentViewController.updateAll()
     }

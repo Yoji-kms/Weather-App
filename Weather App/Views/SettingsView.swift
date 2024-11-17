@@ -8,13 +8,25 @@
 import UIKit
 
 final class SettingsView: UIView {
-    private let secondaryTextColor: UIColor = .systemGray
+    private enum Constants {
+        case primaryTextColor
+        case secondaryTextColor
+        
+        var color: UIColor {
+            return switch self {
+            case .primaryTextColor:
+                    .black
+            case .secondaryTextColor:
+                    .systemGray
+            }
+        }
+    }
     
     private lazy var settinsLabel: UILabel = {
         let label = UILabel()
         
         label.text = String(localized: Strings.settings.rawValue)
-        label.textColor = .black
+        label.textColor = Constants.primaryTextColor.color
         label.textAlignment = .left
         label.font = .systemFont(ofSize: 18, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -26,7 +38,7 @@ final class SettingsView: UIView {
         let label = UILabel()
         
         label.text = String(localized: Strings.temperature.rawValue)
-        label.textColor = self.secondaryTextColor
+        label.textColor = Constants.secondaryTextColor.color
         label.textAlignment = .left
         label.font = .systemFont(ofSize: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -38,7 +50,7 @@ final class SettingsView: UIView {
         let label = UILabel()
         
         label.text = String(localized: Strings.windSpeed.rawValue)
-        label.textColor = self.secondaryTextColor
+        label.textColor = Constants.secondaryTextColor.color
         label.textAlignment = .left
         label.font = .systemFont(ofSize: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -50,7 +62,7 @@ final class SettingsView: UIView {
         let label = UILabel()
         
         label.text = String(localized: Strings.timeFormat.rawValue)
-        label.textColor = self.secondaryTextColor
+        label.textColor = Constants.secondaryTextColor.color
         label.textAlignment = .left
         label.font = .systemFont(ofSize: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -62,7 +74,7 @@ final class SettingsView: UIView {
         let label = UILabel()
         
         label.text = String(localized: Strings.notifications.rawValue)
-        label.textColor = self.secondaryTextColor
+        label.textColor = Constants.secondaryTextColor.color
         label.textAlignment = .left
         label.font = .systemFont(ofSize: 16)
         label.translatesAutoresizingMaskIntoConstraints = false

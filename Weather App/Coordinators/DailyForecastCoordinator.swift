@@ -6,24 +6,32 @@
 //
 
 import UIKit
+import Swinject
 
 final class DailyForecastCoordinator: ModuleCoordinatable {
     let moduleType: Module.ModuleType
     
     weak var delegate: RemoveChildCoordinatorDelegate?
     
-    private let factory: AppFactory
+    private let assembler = Assembler([
+        DailyForecastAssembly()
+    ])
     
     private(set) var childCoordinators: [Coordinatable] = []
     private(set) var module: Module?
+
+    private let forecast: Forecast
     
-    init(moduleType: Module.ModuleType, factory: AppFactory) {
+    init(moduleType: Module.ModuleType, forecast: Forecast) {
         self.moduleType = moduleType
-        self.factory = factory
+        self.forecast = forecast
     }
     
     func start() -> UIViewController {
-        let module = self.factory.makeModule(ofType: self.moduleType)
+        guard let module = assembler.resolver.resolve(Module.self, name: "daily forecast", argument: self.forecast) else {
+            return UIViewController()
+        }
+
         let viewController = module.viewController
         (module.viewModel as? DailyForecastViewModel)?.coordinator = self
         self.module = module

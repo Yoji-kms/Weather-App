@@ -15,17 +15,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         self.window = UIWindow(windowScene: windowScene)
         
-        let coreDataService = CoreDataService()
-        let locationService = LocationService()
-        let factory = AppFactory(coreDataService: coreDataService, locationService: locationService)
-        
-        let rootViewController = self.getRootViewController(locationService: locationService, factory: factory)
+        let rootViewController = self.getRootViewController()
         
         self.window?.rootViewController = rootViewController
         self.window?.makeKeyAndVisible()
     }
     
-    private func getRootViewController(locationService: LocationService, factory: AppFactory) -> UIViewController {
+    private func getRootViewController() -> UIViewController {
+        let coreDataService = CoreDataService()
+        let locationService = LocationService()
+        let coordinatesService = CoordinatesService(coreDataService: coreDataService)
         if locationService.isNotDeterminedAuthorization &&
             !UserDefaults.standard.bool(forKey: UserDefaultKeys.isLocationRequested.rawValue) {
             Settings.shared.update(
@@ -35,10 +34,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 notificationsBool: true
             )
             
-            let appCoordinator = OnboardingCoordinator(moduleType: .onboarding, factory: factory)
+            let appCoordinator = OnboardingCoordinator(
+                moduleType: .onboarding,
+                locationService: locationService,
+                coordinatesService: coordinatesService,
+                coreDataService: coreDataService
+            )
             return appCoordinator.start()
         } else {
-            let appCoordinator = MainScreenPageCoordinator(moduleType: .mainScreenPage, factory: factory)
+            let appCoordinator = MainScreenPageCoordinator(
+                moduleType: .mainScreenPage,
+                coordinatesService: coordinatesService,
+                locationService: locationService,
+                coreDataService: coreDataService
+            )
             return appCoordinator.start()
         }
     }

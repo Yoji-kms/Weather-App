@@ -12,9 +12,13 @@ final class OnboardingViewModel: OnboardingViewModelProtocol {
     var coordinator: OnboardingCoordinator?
     
     let locationService: LocationService
+    let coordinatesService: CoordinatesService
+    let coreDataService: CoreDataService
     
-    init(locationService: LocationService) {
+    init(locationService: LocationService, coordinatesService: CoordinatesService, coreDataService: CoreDataService) {
         self.locationService = locationService
+        self.coordinatesService = coordinatesService
+        self.coreDataService = coreDataService
     }
     
     enum ViewInput {
@@ -27,11 +31,11 @@ final class OnboardingViewModel: OnboardingViewModelProtocol {
         case .acceptDidTap:
             self.locationService.requestWhenInUseAuthorization() { [weak self] in
                 guard let self else { return }
-                self.coordinator?.pushViewController()
+                self.coordinator?.pushViewController(coordinatesService: self.coordinatesService, locationService: self.locationService, coreDataService: self.coreDataService)
                 UserDefaults.standard.setValue(true, forKey: UserDefaultKeys.isLocationRequested.rawValue)
             }
         case .denyDidTap:
-            coordinator?.pushViewController()
+            coordinator?.pushViewController(coordinatesService: self.coordinatesService, locationService: self.locationService, coreDataService: self.coreDataService)
             UserDefaults.standard.setValue(true, forKey: UserDefaultKeys.isLocationRequested.rawValue)
         }
     }

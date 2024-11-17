@@ -6,22 +6,53 @@
 //
 
 import UIKit
+import Swinject
 
 final class MainScreenCoordinator: ModuleCoordinatable {
     let moduleType: Module.ModuleType
     
-    private let factory: AppFactory
+    private let assembler = Assembler([
+        MainScreenAssembly()
+    ])
+    private let coordinates: Coordinates
+    private let weatherService: WeatherService
+    private let forecastService: ForecastService
+    private let coordinatesService: CoordinatesService
+    private let locationService: LocationService
     
     private(set) var childCoordinators: [Coordinatable] = []
     private(set) var module: Module?
     
-    init(moduleType: Module.ModuleType, factory: AppFactory) {
+    init(
+        moduleType: Module.ModuleType,
+        weatherService: WeatherService,
+        forecastService: ForecastService,
+        coordinatesService: CoordinatesService,
+        locationService: LocationService,
+        coordinates: Coordinates
+    ) {
         self.moduleType = moduleType
-        self.factory = factory
+        self.weatherService = weatherService
+        self.forecastService = forecastService
+        self.coordinatesService = coordinatesService
+        self.locationService = locationService
+        
+        self.coordinates = coordinates
     }
     
     func start() -> UIViewController {
-        let module = self.factory.makeModule(ofType: self.moduleType)
+        guard let module = assembler.resolver.resolve(
+            Module.self, name: self.moduleType.name,
+            arguments:
+                self.weatherService,
+            self.forecastService,
+            self.coordinatesService,
+            self.locationService,
+            self.coordinates
+        ) else {
+            return UIViewController()
+        }
+
         let viewController = module.viewController
         (module.viewModel as? MainScreenViewModel)?.coordinator = self
         self.module = module
@@ -39,15 +70,15 @@ final class MainScreenCoordinator: ModuleCoordinatable {
         self.childCoordinators.removeAll(where: { $0 === coordinator })
     }
     
-    func pushViewController(ofType type: Module.ModuleType) {
+    func pushViewController(ofType type: Module.ModuleType, forecast: Forecast, dateId: Int = 0) {
         var childCoordinator: Coordinatable
         
         switch type {
         case .dailyWeatherReport:
-            childCoordinator = DailyWeatherReportCoordinator(moduleType: type, factory: self.factory)
+            childCoordinator = DailyWeatherReportCoordinator(moduleType: type, forecast: forecast, dateId: dateId)
             (childCoordinator as? DailyWeatherReportCoordinator)?.delegate = self
         case .dailyForecast:
-            childCoordinator = DailyForecastCoordinator(moduleType: type, factory: self.factory)
+            childCoordinator = DailyForecastCoordinator(moduleType: type, forecast: forecast)
             (childCoordinator as? DailyForecastCoordinator)?.delegate = self
         default:
             return

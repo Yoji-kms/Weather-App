@@ -6,24 +6,27 @@
 //
 
 import UIKit
+import Swinject
 
 final class SettingsCoordinator: ModuleCoordinatable {
     let moduleType: Module.ModuleType
     
     weak var delegate: RemoveChildCoordinatorDelegate?
     
-    private let factory: AppFactory
+    private let assembler = Assembler([SettingsAssembly()])
     
     private(set) var childCoordinators: [Coordinatable] = []
     private(set) var module: Module?
     
-    init(moduleType: Module.ModuleType, factory: AppFactory) {
+    init(moduleType: Module.ModuleType) {
         self.moduleType = moduleType
-        self.factory = factory
     }
     
     func start() -> UIViewController {
-        let module = self.factory.makeModule(ofType: self.moduleType)
+        guard let module = assembler.resolver.resolve(Module.self, name: self.moduleType.name) else {
+            return UIViewController()
+        }
+
         let viewController = module.viewController
         (module.viewModel as? SettingsViewModel)?.coordinator = self
         self.module = module

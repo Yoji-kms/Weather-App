@@ -6,21 +6,43 @@
 //
 
 import UIKit
+import Swinject
 
 final class MainScreenPageCoordinator: ModuleCoordinatable {
     let moduleType: Module.ModuleType
     
     private(set) var childCoordinators: [Coordinatable] = []
     private(set) var module: Module?
-    private let factory: AppFactory
+
+    private let assembler = Assembler([
+        MainScreenPageAssembly()
+    ])
     
-    init(moduleType: Module.ModuleType,factory: AppFactory) {
+    private let coordinatesService: CoordinatesService
+    private let locationService: LocationService
+    private let coreDataService: CoreDataService
+    
+    init(
+        moduleType: Module.ModuleType,
+        coordinatesService: CoordinatesService,
+        locationService: LocationService,
+        coreDataService: CoreDataService
+    ) {
         self.moduleType = moduleType
-        self.factory = factory
+        self.coordinatesService = coordinatesService
+        self.locationService = locationService
+        self.coreDataService = coreDataService
     }
     
     func start() -> UIViewController {
-        let module = self.factory.makeModule(ofType: .mainScreenPage)
+        guard let module = assembler.resolver.resolve(
+            Module.self,
+            name: self.moduleType.name,
+            arguments: self.coordinatesService, self.locationService, self.coreDataService
+        ) else {
+            return UIViewController()
+        }
+        
         let viewController = module.viewController
         (module.viewModel as? MainScreenPageViewModel)?.coordinator = self
         self.module = module
@@ -38,9 +60,20 @@ final class MainScreenPageCoordinator: ModuleCoordinatable {
         childCoordinators = childCoordinators.filter { $0 === coordinator }
     }
     
-    func addMainViewController(with coordinates: Coordinates) -> MainScreenViewController? {
+    func addMainViewController(
+        with coordinates: Coordinates,
+        weatherService: WeatherService,
+        forecastService: ForecastService,
+        coordinatesService: CoordinatesService,
+        locationService: LocationService
+    ) -> MainScreenViewController? {
         let childCoordinator = MainScreenCoordinator(
-            moduleType: .mainScreen(coordinates), factory: self.factory
+            moduleType: .mainScreen,
+            weatherService: weatherService,
+            forecastService: forecastService,
+            coordinatesService: coordinatesService,
+            locationService: locationService,
+            coordinates: coordinates
         )
         
         self.addChildCoordinator(childCoordinator)
@@ -58,10 +91,8 @@ final class MainScreenPageCoordinator: ModuleCoordinatable {
         var childCoordinator: Coordinatable
         
         switch type {
-        case .onboarding:
-            childCoordinator = OnboardingCoordinator(moduleType: type, factory: self.factory)
         case .settings:
-            childCoordinator = SettingsCoordinator(moduleType: type, factory: self.factory)
+            childCoordinator = SettingsCoordinator(moduleType: type)
             (childCoordinator as? SettingsCoordinator)?.delegate = self
         default:
             return

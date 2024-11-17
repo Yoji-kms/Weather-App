@@ -14,9 +14,9 @@ extension String {
                 return nil
             }
             let (data, _) = try await URLSession.shared.data(from: url)
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            return try decoder.decode(T.self, from: data)
+            async let decoder = JSONDecoder()
+            await decoder.keyDecodingStrategy = .convertFromSnakeCase
+            return try await decoder.decode(T.self, from: data)
         } catch {
             print("♦️\(error)")
             return nil

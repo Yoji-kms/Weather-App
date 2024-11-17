@@ -12,7 +12,7 @@ final class MainScreenViewModel: MainScreenViewModelProtocol {
     weak var coordinator: MainScreenCoordinator?
     private let weatherService: WeatherService
     private let forecastService: ForecastService
-    private let coordinationService: CoordinatesService
+    private let coordinatesService: CoordinatesService
     private let locationService: LocationService
     private var prevCoordinates: Coordinates
     private var coordinates: Coordinates
@@ -28,7 +28,7 @@ final class MainScreenViewModel: MainScreenViewModelProtocol {
     init (
         weatherService: WeatherService,
         forecastService: ForecastService,
-        coordinationService: CoordinatesService,
+        coordinatesService: CoordinatesService,
         locationService: LocationService,
         coordinates: Coordinates
     ) {
@@ -36,7 +36,7 @@ final class MainScreenViewModel: MainScreenViewModelProtocol {
         self.prevCoordinates = coordinates
         self.weatherService = weatherService
         self.forecastService = forecastService
-        self.coordinationService = coordinationService
+        self.coordinatesService = coordinatesService
         self.locationService = locationService
         
         self.weatherService.getWeatherBy(coordinates: coordinates) { [weak self] dbWeather in
@@ -78,7 +78,7 @@ final class MainScreenViewModel: MainScreenViewModelProtocol {
             self.prevCoordinates = self.coordinates
             self.locationService.getLocation() { [weak self] newCoordinates in
                 guard let self else { return }
-                self.coordinationService.updateCoordinates(self.coordinates, newCoordinates: newCoordinates) { _ in
+                self.coordinatesService.updateCoordinates(self.coordinates, newCoordinates: newCoordinates) { _ in
                     self.coordinates = newCoordinates
                     completion()
                 }
@@ -179,9 +179,9 @@ final class MainScreenViewModel: MainScreenViewModelProtocol {
     func updateState(viewInput: ViewInput) {
         switch viewInput {
         case .moreFor24HoursBtnDidTap:
-            self.coordinator?.pushViewController(ofType: .dailyForecast(self.forecast))
+            self.coordinator?.pushViewController(ofType: .dailyForecast, forecast: self.forecast)
         case .dailyWeatherDidSelect(let selectedDateId):
-            self.coordinator?.pushViewController(ofType: .dailyWeatherReport(self.forecast, selectedDateId))
+            self.coordinator?.pushViewController(ofType: .dailyWeatherReport, forecast: self.forecast, dateId: selectedDateId)
         }
     }
 }

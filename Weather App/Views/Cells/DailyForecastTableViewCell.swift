@@ -7,16 +7,40 @@
 import UIKit
 
 final class DailyForecastTableViewCell: UITableViewCell {
-    let primaryTextColor: UIColor = .black
-    let secondaryTextColor: UIColor = .systemGray
-    
-    let primaryFont: UIFont = .systemFont(ofSize: 14)
-    let primaryBoldFont: UIFont = .systemFont(ofSize: 18, weight: .bold)
+    private enum Constants {
+        case primaryTextColor
+        case secondaryTextColor
+        
+        case primaryFont
+        case primaryBoldFont
+        
+        var color: UIColor {
+            return switch self {
+            case .primaryTextColor:
+                .black
+            case .secondaryTextColor:
+                .systemGray
+            default:
+                UIColor()
+            }
+        }
+        
+        var font: UIFont {
+            return switch self {
+            case .primaryFont:
+                    .systemFont(ofSize: 14)
+            case .primaryBoldFont:
+                    .systemFont(ofSize: 18, weight: .bold)
+            default:
+                UIFont()
+            }
+        }
+    }
     
     private lazy var dateLabel: UILabel = {
         let label = UILabel()
-        label.font = primaryBoldFont
-        label.textColor = primaryTextColor
+        label.font = Constants.primaryBoldFont.font
+        label.textColor = Constants.primaryTextColor.color
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -24,8 +48,8 @@ final class DailyForecastTableViewCell: UITableViewCell {
     private lazy var timeLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = primaryFont
-        label.textColor = secondaryTextColor
+        label.font = Constants.primaryFont.font
+        label.textColor = Constants.secondaryTextColor.color
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -33,8 +57,8 @@ final class DailyForecastTableViewCell: UITableViewCell {
     private lazy var temperatureLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = primaryBoldFont
-        label.textColor = primaryTextColor
+        label.font = Constants.primaryBoldFont.font
+        label.textColor = Constants.primaryTextColor.color
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -44,24 +68,24 @@ final class DailyForecastTableViewCell: UITableViewCell {
         label.showsExpansionTextWhenTruncated = true
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
-        label.font = primaryFont
-        label.textColor = primaryTextColor
+        label.font = Constants.primaryFont.font
+        label.textColor = Constants.primaryTextColor.color
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var feelsLikeLabel: UILabel = {
         let label = UILabel()
-        label.font = primaryFont
-        label.textColor = primaryTextColor
+        label.font = Constants.primaryFont.font
+        label.textColor = Constants.primaryTextColor.color
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var windLabel: UILabel = {
         let label = UILabel()
-        label.font = primaryFont
-        label.textColor = primaryTextColor
+        label.font = Constants.primaryFont.font
+        label.textColor = Constants.primaryTextColor.color
 
         let windImgAtchmnt = NSTextAttachment(image: UIImage(resource: .coloredWind))
         windImgAtchmnt.bounds = CGRect(x: 0, y: 0, width: 15, height: 10)
@@ -76,8 +100,8 @@ final class DailyForecastTableViewCell: UITableViewCell {
     
     private lazy var windValueLabel: UILabel = {
         let label = UILabel()
-        label.font = primaryFont
-        label.textColor = secondaryTextColor
+        label.font = Constants.primaryFont.font
+        label.textColor = Constants.secondaryTextColor.color
         label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -85,8 +109,8 @@ final class DailyForecastTableViewCell: UITableViewCell {
     
     private lazy var humidityLabel: UILabel = {
         let label = UILabel()
-        label.font = primaryFont
-        label.textColor = primaryTextColor
+        label.font = Constants.primaryFont.font
+        label.textColor = Constants.primaryTextColor.color
         let humidityImgAtchmnt = NSTextAttachment(image: UIImage(resource: .coloredSmallRain))
         humidityImgAtchmnt.bounds = CGRect(x: 0, y: 0, width: 11, height: 13)
         let humidityText = String(localized: Strings.humidity.rawValue)
@@ -100,8 +124,8 @@ final class DailyForecastTableViewCell: UITableViewCell {
     
     private lazy var humidityValueLabel: UILabel = {
         let label = UILabel()
-        label.font = primaryFont
-        label.textColor = secondaryTextColor
+        label.font = Constants.primaryFont.font
+        label.textColor = Constants.secondaryTextColor.color
         label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -109,8 +133,8 @@ final class DailyForecastTableViewCell: UITableViewCell {
     
     private lazy var cloudsLabel: UILabel = {
         let label = UILabel()
-        label.font = primaryFont
-        label.textColor = primaryTextColor
+        label.font = Constants.primaryFont.font
+        label.textColor = Constants.primaryTextColor.color
         
         let cloudsImgAtchmnt = NSTextAttachment(image: UIImage(resource: .coloredSmallClouds))
         cloudsImgAtchmnt.bounds = CGRect(x: 0, y: 0, width: 14, height: 10)
@@ -125,8 +149,8 @@ final class DailyForecastTableViewCell: UITableViewCell {
     
     private lazy var cloudsValueLabel: UILabel = {
         let label = UILabel()
-        label.font = primaryFont
-        label.textColor = secondaryTextColor
+        label.font = Constants.primaryFont.font
+        label.textColor = Constants.secondaryTextColor.color
         label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

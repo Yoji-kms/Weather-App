@@ -12,6 +12,8 @@ final class MainScreenPageViewModel: MainScreenPageViewModelProtocol {
     var coordinator: MainScreenPageCoordinator?
     private let locationService: LocationService
     private let coordinatesServise: CoordinatesService
+    private let weatherService: WeatherService
+    private let forecastService: ForecastService
     
     private(set) var data: [Coordinates] = []
     
@@ -22,9 +24,11 @@ final class MainScreenPageViewModel: MainScreenPageViewModelProtocol {
         case settingsButtonDidTap
     }
     
-    init(coordinatesServise: CoordinatesService, locationService: LocationService) {
+    init(coordinatesServise: CoordinatesService, locationService: LocationService, coreDataService: CoreDataService) {
         self.coordinatesServise = coordinatesServise
         self.locationService = locationService
+        self.weatherService = WeatherService(coreDataService: coreDataService, coordinatesService: coordinatesServise)
+        self.forecastService = ForecastService(coreDataService: coreDataService, coordinatesService: coordinatesServise)
     }
     
     func updateState(input: ViewInput) {
@@ -48,7 +52,11 @@ final class MainScreenPageViewModel: MainScreenPageViewModelProtocol {
                         self.coordinatesServise.saveCoordinates(coordinates) { dbCoordinates in
                             self.data = dbCoordinates.map { $0.toCoordinates() ?? Coordinates() }
                             guard let newMainScreenViewController = self.coordinator?.addMainViewController(
-                                with: coordinates
+                                with: coordinates,
+                                weatherService: self.weatherService,
+                                forecastService: self.forecastService,
+                                coordinatesService: self.coordinatesServise,
+                                locationService: self.locationService
                             ) else { return }
                             completion(newMainScreenViewController)
                         }
@@ -95,7 +103,11 @@ final class MainScreenPageViewModel: MainScreenPageViewModelProtocol {
         for coordinates in self.data {
             guard
                 let initialMainScreenViewController = self.coordinator?.addMainViewController(
-                    with: coordinates
+                    with: coordinates,
+                    weatherService: self.weatherService,
+                    forecastService: self.forecastService,
+                    coordinatesService: self.coordinatesServise,
+                    locationService: self.locationService
                 )
             else { return }
             initialMainScreenViewControllers.append(initialMainScreenViewController)
